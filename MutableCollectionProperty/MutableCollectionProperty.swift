@@ -1,5 +1,6 @@
 import Foundation
 import ReactiveCocoa
+import Result
 
 public enum CollectionChange<T> {
     case Remove(Int, T)
@@ -31,14 +32,18 @@ public final class MutableCollectionProperty<T>: PropertyType {
     // MARK: - Private attributes
 
     private let _valueObserver: Signal<Value, NoError>.Observer
+    private let _valueObserverSignal: Signal<Value, NoError>.Observer
     private let _changesObserver: Signal<CollectionChange<Value.Element>, NoError>.Observer
+    private let _changesObserverSignal: Signal<CollectionChange<Value.Element>, NoError>.Observer
     private var _value: Value
     private let _lock = NSRecursiveLock()
 
     // MARK: - Public Attributes
 
     public var producer: SignalProducer<Value, NoError>
+    public var signal: Signal<Value, NoError>
     public var changes: SignalProducer<CollectionChange<Value.Element>, NoError>
+    public var changesSignal: Signal<CollectionChange<Value.Element>, NoError>
     public var value: Value {
         get {
             let value = _value
@@ -58,11 +63,15 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _value = initialValue
         (producer, _valueObserver) = SignalProducer<Value, NoError>.buffer(1)
         (changes, _changesObserver) = SignalProducer<CollectionChange<Value.Element>, NoError>.buffer(1)
+        (signal, _valueObserverSignal) = Signal<Value, NoError>.pipe()
+        (changesSignal, _changesObserverSignal) = Signal<CollectionChange<Value.Element>, NoError>.pipe()
     }
 
     deinit {
         _valueObserver.sendCompleted()
+        _valueObserverSignal.sendCompleted()
         _changesObserver.sendCompleted()
+        _changesObserverSignal.sendCompleted()
     }
     
     
@@ -73,7 +82,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _lock.lock()
         let deletedElement = _value.removeFirst()
         _changesObserver.sendNext(.Remove(0, deletedElement))
+        _changesObserverSignal.sendNext(.Remove(0, deletedElement))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
 
@@ -83,7 +94,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
         let index = _value.count - 1
         let deletedElement = _value.removeLast()
         _changesObserver.sendNext(.Remove(index, deletedElement))
+        _changesObserverSignal.sendNext(.Remove(index, deletedElement))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
     
@@ -92,7 +105,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
         let copiedValue = _value
         _value.removeAll()
         _changesObserver.sendNext(.Composite(copiedValue.mapWithIndex{CollectionChange.Remove($0, $1)}))
+        _changesObserverSignal.sendNext(.Composite(copiedValue.mapWithIndex{CollectionChange.Remove($0, $1)}))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
 
@@ -100,7 +115,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _lock.lock()
         let deletedElement = _value.removeAtIndex(index)
         _changesObserver.sendNext(CollectionChange.Remove(index, deletedElement))
+        _changesObserverSignal.sendNext(CollectionChange.Remove(index, deletedElement))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
     
@@ -108,7 +125,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _lock.lock()
         _value.append(element)
         _changesObserver.sendNext(.Insert(_value.count - 1, element))
+        _changesObserverSignal.sendNext(.Insert(_value.count - 1, element))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
     
@@ -117,7 +136,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
         let count = _value.count
         _value.appendContentsOf(elements)
         _changesObserver.sendNext(.Composite(elements.mapWithIndex{CollectionChange.Insert(count + $0, $1)}))
+        _changesObserverSignal.sendNext(.Composite(elements.mapWithIndex{CollectionChange.Insert(count + $0, $1)}))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
     
@@ -125,7 +146,9 @@ public final class MutableCollectionProperty<T>: PropertyType {
         _lock.lock()
         _value.insert(newElement, atIndex: index)
         _changesObserver.sendNext(.Insert(index, newElement))
+        _changesObserverSignal.sendNext(.Insert(index, newElement))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
     
@@ -141,8 +164,11 @@ public final class MutableCollectionProperty<T>: PropertyType {
             insertsComposite.append(.Insert(subRange.startIndex + index, element))
         }
         _changesObserver.sendNext(.Composite(deletesComposite))
+        _changesObserverSignal.sendNext(.Composite(deletesComposite))
         _changesObserver.sendNext(.Composite(insertsComposite))
+        _changesObserverSignal.sendNext(.Composite(insertsComposite))
         _valueObserver.sendNext(_value)
+        _valueObserverSignal.sendNext(_value)
         _lock.unlock()
     }
 }
