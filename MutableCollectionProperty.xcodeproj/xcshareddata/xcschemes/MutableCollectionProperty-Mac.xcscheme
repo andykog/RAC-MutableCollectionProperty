@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
+   LastUpgradeVersion = "0720"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -13,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "23AE4B2E1BCE5CF100D1082B"
-               BuildableName = "MutableCollectionPropertyTests.xctest"
-               BlueprintName = "MutableCollectionPropertyTests"
+               BlueprintIdentifier = "903967B61C6D79D6008AC686"
+               BuildableName = "MutableCollectionProperty.framework"
+               BlueprintName = "MutableCollectionProperty-Mac"
                ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,13 +32,22 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "23AE4B2E1BCE5CF100D1082B"
+               BlueprintIdentifier = "903967C41C6D7A06008AC686"
                BuildableName = "MutableCollectionPropertyTests.xctest"
-               BlueprintName = "MutableCollectionPropertyTests"
+               BlueprintName = "MutableCollectionProperty-MacTests"
                ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "903967B61C6D79D6008AC686"
+            BuildableName = "MutableCollectionProperty.framework"
+            BlueprintName = "MutableCollectionProperty-Mac"
+            ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -54,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "23AE4B2E1BCE5CF100D1082B"
-            BuildableName = "MutableCollectionPropertyTests.xctest"
-            BlueprintName = "MutableCollectionPropertyTests"
+            BlueprintIdentifier = "903967B61C6D79D6008AC686"
+            BuildableName = "MutableCollectionProperty.framework"
+            BlueprintName = "MutableCollectionProperty-Mac"
             ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -69,6 +79,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "903967B61C6D79D6008AC686"
+            BuildableName = "MutableCollectionProperty.framework"
+            BlueprintName = "MutableCollectionProperty-Mac"
+            ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
