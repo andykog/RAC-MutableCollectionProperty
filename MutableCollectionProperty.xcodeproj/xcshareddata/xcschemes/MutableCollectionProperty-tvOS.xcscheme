@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9039F6721C6D8AEE006189C5"
-               BuildableName = "MutableCollectionProperty-tvOS.framework"
+               BuildableName = "MutableCollectionProperty.framework"
                BlueprintName = "MutableCollectionProperty-tvOS"
                ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9039F6721C6D8AEE006189C5"
-            BuildableName = "MutableCollectionProperty-tvOS.framework"
+            BuildableName = "MutableCollectionProperty.framework"
             BlueprintName = "MutableCollectionProperty-tvOS"
             ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9039F6721C6D8AEE006189C5"
-            BuildableName = "MutableCollectionProperty-tvOS.framework"
+            BuildableName = "MutableCollectionProperty.framework"
             BlueprintName = "MutableCollectionProperty-tvOS"
             ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
          </BuildableReference>
@@ -83,7 +83,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9039F6721C6D8AEE006189C5"
-            BuildableName = "MutableCollectionProperty-tvOS.framework"
+            BuildableName = "MutableCollectionProperty.framework"
             BlueprintName = "MutableCollectionProperty-tvOS"
             ReferencedContainer = "container:MutableCollectionProperty.xcodeproj">
          </BuildableReference>
