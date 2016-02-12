@@ -15,8 +15,6 @@
 		903967BD1C6D79D6008AC686 /* MutableCollectionProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		903967C81C6D7A06008AC686 /* MutableCollectionPropertyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */; };
 		903967EC1C6D7CF1008AC686 /* MutableCollectionProperty.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967C21C6D79D6008AC686 /* MutableCollectionProperty.framework */; };
-		9039681C1C6D7EAB008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */; };
-		9039681D1C6D7EAD008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FF1C6D7E40008AC686 /* Result.framework.dSYM */; };
 		9039681E1C6D7EB2008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; };
 		9039681F1C6D7EB2008AC686 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; };
 		903968201C6D7EB8008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; };
@@ -27,24 +25,16 @@
 		903968251C6D7EC7008AC686 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FA1C6D7E40008AC686 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		903968261C6D7EC7008AC686 /* ReactiveCocoa.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		903968271C6D7EC7008AC686 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		903968291C6D7ED8008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967F91C6D7E40008AC686 /* Nimble.framework.dSYM */; };
-		9039682A1C6D7ED8008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FB1C6D7E40008AC686 /* Quick.framework.dSYM */; };
-		9039682B1C6D7ED8008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */; };
-		9039682C1C6D7ED8008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FF1C6D7E40008AC686 /* Result.framework.dSYM */; };
-		9039682D1C6D7EE0008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968051C6D7E40008AC686 /* ReactiveCocoa.framework */; };
-		9039682E1C6D7EE0008AC686 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968071C6D7E40008AC686 /* Result.framework */; };
-		903968321C6D7F10008AC686 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968011C6D7E40008AC686 /* Nimble.framework */; };
-		903968331C6D7F10008AC686 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968031C6D7E40008AC686 /* Quick.framework */; };
-		903968341C6D7F10008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968051C6D7E40008AC686 /* ReactiveCocoa.framework */; };
-		903968351C6D7F10008AC686 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968071C6D7E40008AC686 /* Result.framework */; };
-		903968371C6D7F1F008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968021C6D7E40008AC686 /* Nimble.framework.dSYM */; };
-		903968381C6D7F1F008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968041C6D7E40008AC686 /* Quick.framework.dSYM */; };
-		903968391C6D7F1F008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968061C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */; };
-		9039683A1C6D7F1F008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968081C6D7E40008AC686 /* Result.framework.dSYM */; };
-		9039683B1C6D7F27008AC686 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968011C6D7E40008AC686 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9039683C1C6D7F27008AC686 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968031C6D7E40008AC686 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9039683D1C6D7F27008AC686 /* ReactiveCocoa.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968051C6D7E40008AC686 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9039683E1C6D7F27008AC686 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968071C6D7E40008AC686 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9039F6471C6D8855006189C5 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967F81C6D7E40008AC686 /* Nimble.framework */; };
+		9039F64B1C6D885D006189C5 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FA1C6D7E40008AC686 /* Quick.framework */; };
+		9039F64C1C6D885D006189C5 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; };
+		9039F64D1C6D885D006189C5 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; };
+		9039F64E1C6D8863006189C5 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; };
+		9039F64F1C6D8863006189C5 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; };
+		9039F6501C6D8914006189C5 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967F81C6D7E40008AC686 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9039F6511C6D8914006189C5 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FA1C6D7E40008AC686 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9039F6521C6D8914006189C5 /* ReactiveCocoa.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9039F6531C6D8914006189C5 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,10 +75,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9039683B1C6D7F27008AC686 /* Nimble.framework in Copy Frameworks */,
-				9039683C1C6D7F27008AC686 /* Quick.framework in Copy Frameworks */,
-				9039683D1C6D7F27008AC686 /* ReactiveCocoa.framework in Copy Frameworks */,
-				9039683E1C6D7F27008AC686 /* Result.framework in Copy Frameworks */,
+				9039F6501C6D8914006189C5 /* Nimble.framework in Copy Frameworks */,
+				9039F6511C6D8914006189C5 /* Quick.framework in Copy Frameworks */,
+				9039F6521C6D8914006189C5 /* ReactiveCocoa.framework in Copy Frameworks */,
+				9039F6531C6D8914006189C5 /* Result.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,8 +89,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				9039681C1C6D7EAB008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */,
-				9039681D1C6D7EAD008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */,
 			);
 			name = "Copy Debugging Symbols";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -111,10 +99,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				903968291C6D7ED8008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */,
-				9039682A1C6D7ED8008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */,
-				9039682B1C6D7ED8008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */,
-				9039682C1C6D7ED8008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */,
 			);
 			name = "Copy Debugging Symbols";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -125,10 +109,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				903968371C6D7F1F008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */,
-				903968381C6D7F1F008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */,
-				903968391C6D7F1F008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */,
-				9039683A1C6D7F1F008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */,
 			);
 			name = "Copy Debugging Symbols";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -145,22 +125,10 @@
 		23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableCollectionProperty.swift; sourceTree = "<group>"; };
 		903967C21C6D79D6008AC686 /* MutableCollectionProperty.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MutableCollectionProperty.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		903967D81C6D7A06008AC686 /* MutableCollectionPropertyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MutableCollectionPropertyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		903967F81C6D7E40008AC686 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = "<group>"; };
-		903967F91C6D7E40008AC686 /* Nimble.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Nimble.framework.dSYM; sourceTree = "<group>"; };
-		903967FA1C6D7E40008AC686 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quick.framework; sourceTree = "<group>"; };
-		903967FB1C6D7E40008AC686 /* Quick.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Quick.framework.dSYM; sourceTree = "<group>"; };
-		903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ReactiveCocoa.framework; sourceTree = "<group>"; };
-		903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = ReactiveCocoa.framework.dSYM; sourceTree = "<group>"; };
-		903967FE1C6D7E40008AC686 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = "<group>"; };
-		903967FF1C6D7E40008AC686 /* Result.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Result.framework.dSYM; sourceTree = "<group>"; };
-		903968011C6D7E40008AC686 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = "<group>"; };
-		903968021C6D7E40008AC686 /* Nimble.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Nimble.framework.dSYM; sourceTree = "<group>"; };
-		903968031C6D7E40008AC686 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quick.framework; sourceTree = "<group>"; };
-		903968041C6D7E40008AC686 /* Quick.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Quick.framework.dSYM; sourceTree = "<group>"; };
-		903968051C6D7E40008AC686 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ReactiveCocoa.framework; sourceTree = "<group>"; };
-		903968061C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = ReactiveCocoa.framework.dSYM; sourceTree = "<group>"; };
-		903968071C6D7E40008AC686 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = "<group>"; };
-		903968081C6D7E40008AC686 /* Result.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Result.framework.dSYM; sourceTree = "<group>"; };
+		903967F81C6D7E40008AC686 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		903967FA1C6D7E40008AC686 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quick.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ReactiveCocoa.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		903967FE1C6D7E40008AC686 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,8 +157,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9039682D1C6D7EE0008AC686 /* ReactiveCocoa.framework in Frameworks */,
-				9039682E1C6D7EE0008AC686 /* Result.framework in Frameworks */,
+				9039F64E1C6D8863006189C5 /* ReactiveCocoa.framework in Frameworks */,
+				9039F64F1C6D8863006189C5 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,10 +167,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				903967EC1C6D7CF1008AC686 /* MutableCollectionProperty.framework in Frameworks */,
-				903968321C6D7F10008AC686 /* Nimble.framework in Frameworks */,
-				903968331C6D7F10008AC686 /* Quick.framework in Frameworks */,
-				903968351C6D7F10008AC686 /* Result.framework in Frameworks */,
-				903968341C6D7F10008AC686 /* ReactiveCocoa.framework in Frameworks */,
+				9039F64D1C6D885D006189C5 /* Result.framework in Frameworks */,
+				9039F64C1C6D885D006189C5 /* ReactiveCocoa.framework in Frameworks */,
+				9039F6471C6D8855006189C5 /* Nimble.framework in Frameworks */,
+				9039F64B1C6D885D006189C5 /* Quick.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,42 +220,12 @@
 		23AE4B471BCE5DB900D1082B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				903967F31C6D7E40008AC686 /* iOS */,
-				903968001C6D7E40008AC686 /* Mac */,
+				903967F81C6D7E40008AC686 /* Nimble.framework */,
+				903967FA1C6D7E40008AC686 /* Quick.framework */,
+				903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */,
+				903967FE1C6D7E40008AC686 /* Result.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		903967F31C6D7E40008AC686 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				903967F81C6D7E40008AC686 /* Nimble.framework */,
-				903967F91C6D7E40008AC686 /* Nimble.framework.dSYM */,
-				903967FA1C6D7E40008AC686 /* Quick.framework */,
-				903967FB1C6D7E40008AC686 /* Quick.framework.dSYM */,
-				903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */,
-				903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */,
-				903967FE1C6D7E40008AC686 /* Result.framework */,
-				903967FF1C6D7E40008AC686 /* Result.framework.dSYM */,
-			);
-			name = iOS;
-			path = Carthage/Build/iOS;
-			sourceTree = "<group>";
-		};
-		903968001C6D7E40008AC686 /* Mac */ = {
-			isa = PBXGroup;
-			children = (
-				903968011C6D7E40008AC686 /* Nimble.framework */,
-				903968021C6D7E40008AC686 /* Nimble.framework.dSYM */,
-				903968031C6D7E40008AC686 /* Quick.framework */,
-				903968041C6D7E40008AC686 /* Quick.framework.dSYM */,
-				903968051C6D7E40008AC686 /* ReactiveCocoa.framework */,
-				903968061C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */,
-				903968071C6D7E40008AC686 /* Result.framework */,
-				903968081C6D7E40008AC686 /* Result.framework.dSYM */,
-			);
-			name = Mac;
-			path = Carthage/Build/Mac;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -658,6 +596,11 @@
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MutableCollectionProperty/Info.plist;
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
@@ -673,6 +616,11 @@
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MutableCollectionProperty/Info.plist;
 				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
@@ -685,6 +633,11 @@
 		903967D61C6D7A06008AC686 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
@@ -696,6 +649,11 @@
 		903967D71C6D7A06008AC686 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
