@@ -83,36 +83,6 @@
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9039681B1C6D7E9C008AC686 /* Copy Debugging Symbols */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			name = "Copy Debugging Symbols";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		903968281C6D7ECA008AC686 /* Copy Debugging Symbols */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			name = "Copy Debugging Symbols";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		903968361C6D7F13008AC686 /* Copy Debugging Symbols */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
-			);
-			name = "Copy Debugging Symbols";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -257,8 +227,6 @@
 				23AE4B201BCE5CF100D1082B /* Sources */,
 				23AE4B211BCE5CF100D1082B /* Frameworks */,
 				23AE4B221BCE5CF100D1082B /* Headers */,
-				23AE4B231BCE5CF100D1082B /* Resources */,
-				9039681B1C6D7E9C008AC686 /* Copy Debugging Symbols */,
 			);
 			buildRules = (
 			);
@@ -275,9 +243,7 @@
 			buildPhases = (
 				23AE4B2B1BCE5CF100D1082B /* Sources */,
 				23AE4B2C1BCE5CF100D1082B /* Frameworks */,
-				23AE4B2D1BCE5CF100D1082B /* Resources */,
 				23B531A81BCF7EDD006656E3 /* Copy Frameworks */,
-				903968281C6D7ECA008AC686 /* Copy Debugging Symbols */,
 			);
 			buildRules = (
 			);
@@ -296,7 +262,6 @@
 				903967B71C6D79D6008AC686 /* Sources */,
 				903967B91C6D79D6008AC686 /* Frameworks */,
 				903967BC1C6D79D6008AC686 /* Headers */,
-				903967BE1C6D79D6008AC686 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -313,9 +278,7 @@
 			buildPhases = (
 				903967C71C6D7A06008AC686 /* Sources */,
 				903967C91C6D7A06008AC686 /* Frameworks */,
-				903967CF1C6D7A06008AC686 /* Resources */,
 				903967D01C6D7A06008AC686 /* Copy Frameworks */,
-				903968361C6D7F13008AC686 /* Copy Debugging Symbols */,
 			);
 			buildRules = (
 			);
@@ -364,37 +327,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		23AE4B231BCE5CF100D1082B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		23AE4B2D1BCE5CF100D1082B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		903967BE1C6D79D6008AC686 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		903967CF1C6D7A06008AC686 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		23AE4B201BCE5CF100D1082B /* Sources */ = {
