@@ -10,17 +10,41 @@
 		23AE4B291BCE5CF100D1082B /* MutableCollectionProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */; };
 		23AE4B351BCE5CF100D1082B /* MutableCollectionPropertyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */; };
-		23AE4B431BCE5D9E00D1082B /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; };
-		23AE4B441BCE5D9E00D1082B /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; };
 		23AE4B461BCE5DAF00D1082B /* MutableCollectionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */; };
-		23B531A51BCF7E96006656E3 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A31BCF7E96006656E3 /* Nimble.framework */; };
-		23B531A61BCF7E96006656E3 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A41BCF7E96006656E3 /* Quick.framework */; };
-		23B531A91BCF7EE9006656E3 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A31BCF7E96006656E3 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		23B531AA1BCF7EE9006656E3 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23B531A41BCF7E96006656E3 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		23B531AD1BCF87B6006656E3 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; };
-		23B531AE1BCF87C9006656E3 /* ReactiveCocoa.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		23B531AF1BCF87CD006656E3 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		23B531B01BCF87D2006656E3 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B411BCE5D9E00D1082B /* Result.framework */; };
+		903967B81C6D79D6008AC686 /* MutableCollectionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */; };
+		903967BD1C6D79D6008AC686 /* MutableCollectionProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		903967C81C6D7A06008AC686 /* MutableCollectionPropertyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */; };
+		903967EC1C6D7CF1008AC686 /* MutableCollectionProperty.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967C21C6D79D6008AC686 /* MutableCollectionProperty.framework */; };
+		9039681C1C6D7EAB008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */; };
+		9039681D1C6D7EAD008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FF1C6D7E40008AC686 /* Result.framework.dSYM */; };
+		9039681E1C6D7EB2008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; };
+		9039681F1C6D7EB2008AC686 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; };
+		903968201C6D7EB8008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; };
+		903968211C6D7EB8008AC686 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; };
+		903968221C6D7EBB008AC686 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967F81C6D7E40008AC686 /* Nimble.framework */; };
+		903968231C6D7EBE008AC686 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FA1C6D7E40008AC686 /* Quick.framework */; };
+		903968241C6D7EC7008AC686 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967F81C6D7E40008AC686 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		903968251C6D7EC7008AC686 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FA1C6D7E40008AC686 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		903968261C6D7EC7008AC686 /* ReactiveCocoa.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		903968271C6D7EC7008AC686 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903967FE1C6D7E40008AC686 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		903968291C6D7ED8008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967F91C6D7E40008AC686 /* Nimble.framework.dSYM */; };
+		9039682A1C6D7ED8008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FB1C6D7E40008AC686 /* Quick.framework.dSYM */; };
+		9039682B1C6D7ED8008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */; };
+		9039682C1C6D7ED8008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903967FF1C6D7E40008AC686 /* Result.framework.dSYM */; };
+		9039682D1C6D7EE0008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968051C6D7E40008AC686 /* ReactiveCocoa.framework */; };
+		9039682E1C6D7EE0008AC686 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968071C6D7E40008AC686 /* Result.framework */; };
+		903968321C6D7F10008AC686 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968011C6D7E40008AC686 /* Nimble.framework */; };
+		903968331C6D7F10008AC686 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968031C6D7E40008AC686 /* Quick.framework */; };
+		903968341C6D7F10008AC686 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968051C6D7E40008AC686 /* ReactiveCocoa.framework */; };
+		903968351C6D7F10008AC686 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 903968071C6D7E40008AC686 /* Result.framework */; };
+		903968371C6D7F1F008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968021C6D7E40008AC686 /* Nimble.framework.dSYM */; };
+		903968381C6D7F1F008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968041C6D7E40008AC686 /* Quick.framework.dSYM */; };
+		903968391C6D7F1F008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968061C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */; };
+		9039683A1C6D7F1F008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */ = {isa = PBXBuildFile; fileRef = 903968081C6D7E40008AC686 /* Result.framework.dSYM */; };
+		9039683B1C6D7F27008AC686 /* Nimble.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968011C6D7E40008AC686 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9039683C1C6D7F27008AC686 /* Quick.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968031C6D7E40008AC686 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9039683D1C6D7F27008AC686 /* ReactiveCocoa.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968051C6D7E40008AC686 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9039683E1C6D7F27008AC686 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 903968071C6D7E40008AC686 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +55,13 @@
 			remoteGlobalIDString = 23AE4B241BCE5CF100D1082B;
 			remoteInfo = MutableCollectionProperty;
 		};
+		903967DA1C6D7A4C008AC686 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 23AE4B1C1BCE5CF100D1082B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 903967B61C6D79D6008AC686;
+			remoteInfo = "MutableCollectionProperty-Mac";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,12 +71,66 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				23B531AF1BCF87CD006656E3 /* Result.framework in Copy Frameworks */,
-				23B531AE1BCF87C9006656E3 /* ReactiveCocoa.framework in Copy Frameworks */,
-				23B531A91BCF7EE9006656E3 /* Nimble.framework in Copy Frameworks */,
-				23B531AA1BCF7EE9006656E3 /* Quick.framework in Copy Frameworks */,
+				903968241C6D7EC7008AC686 /* Nimble.framework in Copy Frameworks */,
+				903968251C6D7EC7008AC686 /* Quick.framework in Copy Frameworks */,
+				903968261C6D7EC7008AC686 /* ReactiveCocoa.framework in Copy Frameworks */,
+				903968271C6D7EC7008AC686 /* Result.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903967D01C6D7A06008AC686 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9039683B1C6D7F27008AC686 /* Nimble.framework in Copy Frameworks */,
+				9039683C1C6D7F27008AC686 /* Quick.framework in Copy Frameworks */,
+				9039683D1C6D7F27008AC686 /* ReactiveCocoa.framework in Copy Frameworks */,
+				9039683E1C6D7F27008AC686 /* Result.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9039681B1C6D7E9C008AC686 /* Copy Debugging Symbols */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				9039681C1C6D7EAB008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */,
+				9039681D1C6D7EAD008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */,
+			);
+			name = "Copy Debugging Symbols";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903968281C6D7ECA008AC686 /* Copy Debugging Symbols */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				903968291C6D7ED8008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */,
+				9039682A1C6D7ED8008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */,
+				9039682B1C6D7ED8008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */,
+				9039682C1C6D7ED8008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */,
+			);
+			name = "Copy Debugging Symbols";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903968361C6D7F13008AC686 /* Copy Debugging Symbols */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				903968371C6D7F1F008AC686 /* Nimble.framework.dSYM in Copy Debugging Symbols */,
+				903968381C6D7F1F008AC686 /* Quick.framework.dSYM in Copy Debugging Symbols */,
+				903968391C6D7F1F008AC686 /* ReactiveCocoa.framework.dSYM in Copy Debugging Symbols */,
+				9039683A1C6D7F1F008AC686 /* Result.framework.dSYM in Copy Debugging Symbols */,
+			);
+			name = "Copy Debugging Symbols";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -57,11 +142,25 @@
 		23AE4B2F1BCE5CF100D1082B /* MutableCollectionPropertyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MutableCollectionPropertyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableCollectionPropertyTests.swift; sourceTree = "<group>"; };
 		23AE4B361BCE5CF100D1082B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/iOS/ReactiveCocoa.framework; sourceTree = "<group>"; };
-		23AE4B411BCE5D9E00D1082B /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/iOS/Result.framework; sourceTree = "<group>"; };
 		23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableCollectionProperty.swift; sourceTree = "<group>"; };
-		23B531A31BCF7E96006656E3 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = "<group>"; };
-		23B531A41BCF7E96006656E3 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
+		903967C21C6D79D6008AC686 /* MutableCollectionProperty.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MutableCollectionProperty.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		903967D81C6D7A06008AC686 /* MutableCollectionPropertyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MutableCollectionPropertyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		903967F81C6D7E40008AC686 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = "<group>"; };
+		903967F91C6D7E40008AC686 /* Nimble.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Nimble.framework.dSYM; sourceTree = "<group>"; };
+		903967FA1C6D7E40008AC686 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quick.framework; sourceTree = "<group>"; };
+		903967FB1C6D7E40008AC686 /* Quick.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Quick.framework.dSYM; sourceTree = "<group>"; };
+		903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ReactiveCocoa.framework; sourceTree = "<group>"; };
+		903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = ReactiveCocoa.framework.dSYM; sourceTree = "<group>"; };
+		903967FE1C6D7E40008AC686 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = "<group>"; };
+		903967FF1C6D7E40008AC686 /* Result.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Result.framework.dSYM; sourceTree = "<group>"; };
+		903968011C6D7E40008AC686 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = "<group>"; };
+		903968021C6D7E40008AC686 /* Nimble.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Nimble.framework.dSYM; sourceTree = "<group>"; };
+		903968031C6D7E40008AC686 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Quick.framework; sourceTree = "<group>"; };
+		903968041C6D7E40008AC686 /* Quick.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Quick.framework.dSYM; sourceTree = "<group>"; };
+		903968051C6D7E40008AC686 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ReactiveCocoa.framework; sourceTree = "<group>"; };
+		903968061C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = ReactiveCocoa.framework.dSYM; sourceTree = "<group>"; };
+		903968071C6D7E40008AC686 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = "<group>"; };
+		903968081C6D7E40008AC686 /* Result.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = Result.framework.dSYM; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,8 +168,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23AE4B431BCE5D9E00D1082B /* ReactiveCocoa.framework in Frameworks */,
-				23AE4B441BCE5D9E00D1082B /* Result.framework in Frameworks */,
+				9039681E1C6D7EB2008AC686 /* ReactiveCocoa.framework in Frameworks */,
+				9039681F1C6D7EB2008AC686 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,10 +178,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */,
-				23B531A51BCF7E96006656E3 /* Nimble.framework in Frameworks */,
-				23B531AD1BCF87B6006656E3 /* ReactiveCocoa.framework in Frameworks */,
-				23B531A61BCF7E96006656E3 /* Quick.framework in Frameworks */,
-				23B531B01BCF87D2006656E3 /* Result.framework in Frameworks */,
+				903968221C6D7EBB008AC686 /* Nimble.framework in Frameworks */,
+				903968231C6D7EBE008AC686 /* Quick.framework in Frameworks */,
+				903968201C6D7EB8008AC686 /* ReactiveCocoa.framework in Frameworks */,
+				903968211C6D7EB8008AC686 /* Result.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903967B91C6D79D6008AC686 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9039682D1C6D7EE0008AC686 /* ReactiveCocoa.framework in Frameworks */,
+				9039682E1C6D7EE0008AC686 /* Result.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903967C91C6D7A06008AC686 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				903967EC1C6D7CF1008AC686 /* MutableCollectionProperty.framework in Frameworks */,
+				903968321C6D7F10008AC686 /* Nimble.framework in Frameworks */,
+				903968331C6D7F10008AC686 /* Quick.framework in Frameworks */,
+				903968351C6D7F10008AC686 /* Result.framework in Frameworks */,
+				903968341C6D7F10008AC686 /* ReactiveCocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,6 +224,8 @@
 			children = (
 				23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */,
 				23AE4B2F1BCE5CF100D1082B /* MutableCollectionPropertyTests.xctest */,
+				903967C21C6D79D6008AC686 /* MutableCollectionProperty.framework */,
+				903967D81C6D7A06008AC686 /* MutableCollectionPropertyTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,8 +233,8 @@
 		23AE4B271BCE5CF100D1082B /* MutableCollectionProperty */ = {
 			isa = PBXGroup;
 			children = (
-				23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */,
 				23AE4B2A1BCE5CF100D1082B /* Info.plist */,
+				23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */,
 				23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */,
 			);
 			path = MutableCollectionProperty;
@@ -121,8 +243,8 @@
 		23AE4B331BCE5CF100D1082B /* MutableCollectionPropertyTests */ = {
 			isa = PBXGroup;
 			children = (
-				23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */,
 				23AE4B361BCE5CF100D1082B /* Info.plist */,
+				23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */,
 			);
 			path = MutableCollectionPropertyTests;
 			sourceTree = "<group>";
@@ -130,12 +252,42 @@
 		23AE4B471BCE5DB900D1082B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				23B531A31BCF7E96006656E3 /* Nimble.framework */,
-				23B531A41BCF7E96006656E3 /* Quick.framework */,
-				23AE4B401BCE5D9E00D1082B /* ReactiveCocoa.framework */,
-				23AE4B411BCE5D9E00D1082B /* Result.framework */,
+				903967F31C6D7E40008AC686 /* iOS */,
+				903968001C6D7E40008AC686 /* Mac */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		903967F31C6D7E40008AC686 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				903967F81C6D7E40008AC686 /* Nimble.framework */,
+				903967F91C6D7E40008AC686 /* Nimble.framework.dSYM */,
+				903967FA1C6D7E40008AC686 /* Quick.framework */,
+				903967FB1C6D7E40008AC686 /* Quick.framework.dSYM */,
+				903967FC1C6D7E40008AC686 /* ReactiveCocoa.framework */,
+				903967FD1C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */,
+				903967FE1C6D7E40008AC686 /* Result.framework */,
+				903967FF1C6D7E40008AC686 /* Result.framework.dSYM */,
+			);
+			name = iOS;
+			path = Carthage/Build/iOS;
+			sourceTree = "<group>";
+		};
+		903968001C6D7E40008AC686 /* Mac */ = {
+			isa = PBXGroup;
+			children = (
+				903968011C6D7E40008AC686 /* Nimble.framework */,
+				903968021C6D7E40008AC686 /* Nimble.framework.dSYM */,
+				903968031C6D7E40008AC686 /* Quick.framework */,
+				903968041C6D7E40008AC686 /* Quick.framework.dSYM */,
+				903968051C6D7E40008AC686 /* ReactiveCocoa.framework */,
+				903968061C6D7E40008AC686 /* ReactiveCocoa.framework.dSYM */,
+				903968071C6D7E40008AC686 /* Result.framework */,
+				903968081C6D7E40008AC686 /* Result.framework.dSYM */,
+			);
+			name = Mac;
+			path = Carthage/Build/Mac;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,44 +301,92 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		903967BC1C6D79D6008AC686 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				903967BD1C6D79D6008AC686 /* MutableCollectionProperty.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		23AE4B241BCE5CF100D1082B /* MutableCollectionProperty */ = {
+		23AE4B241BCE5CF100D1082B /* MutableCollectionProperty-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23AE4B391BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionProperty" */;
+			buildConfigurationList = 23AE4B391BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-iOS" */;
 			buildPhases = (
 				23AE4B201BCE5CF100D1082B /* Sources */,
 				23AE4B211BCE5CF100D1082B /* Frameworks */,
 				23AE4B221BCE5CF100D1082B /* Headers */,
 				23AE4B231BCE5CF100D1082B /* Resources */,
+				9039681B1C6D7E9C008AC686 /* Copy Debugging Symbols */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = MutableCollectionProperty;
+			name = "MutableCollectionProperty-iOS";
 			productName = MutableCollectionProperty;
 			productReference = 23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		23AE4B2E1BCE5CF100D1082B /* MutableCollectionPropertyTests */ = {
+		23AE4B2E1BCE5CF100D1082B /* MutableCollectionProperty-iOSTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 23AE4B3C1BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionPropertyTests" */;
+			buildConfigurationList = 23AE4B3C1BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-iOSTests" */;
 			buildPhases = (
 				23AE4B2B1BCE5CF100D1082B /* Sources */,
 				23AE4B2C1BCE5CF100D1082B /* Frameworks */,
 				23AE4B2D1BCE5CF100D1082B /* Resources */,
 				23B531A81BCF7EDD006656E3 /* Copy Frameworks */,
+				903968281C6D7ECA008AC686 /* Copy Debugging Symbols */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				23AE4B321BCE5CF100D1082B /* PBXTargetDependency */,
 			);
-			name = MutableCollectionPropertyTests;
+			name = "MutableCollectionProperty-iOSTests";
 			productName = MutableCollectionPropertyTests;
 			productReference = 23AE4B2F1BCE5CF100D1082B /* MutableCollectionPropertyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		903967B61C6D79D6008AC686 /* MutableCollectionProperty-Mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 903967BF1C6D79D6008AC686 /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-Mac" */;
+			buildPhases = (
+				903967B71C6D79D6008AC686 /* Sources */,
+				903967B91C6D79D6008AC686 /* Frameworks */,
+				903967BC1C6D79D6008AC686 /* Headers */,
+				903967BE1C6D79D6008AC686 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MutableCollectionProperty-Mac";
+			productName = MutableCollectionProperty;
+			productReference = 903967C21C6D79D6008AC686 /* MutableCollectionProperty.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		903967C41C6D7A06008AC686 /* MutableCollectionProperty-MacTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 903967D51C6D7A06008AC686 /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-MacTests" */;
+			buildPhases = (
+				903967C71C6D7A06008AC686 /* Sources */,
+				903967C91C6D7A06008AC686 /* Frameworks */,
+				903967CF1C6D7A06008AC686 /* Resources */,
+				903967D01C6D7A06008AC686 /* Copy Frameworks */,
+				903968361C6D7F13008AC686 /* Copy Debugging Symbols */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				903967DB1C6D7A4C008AC686 /* PBXTargetDependency */,
+			);
+			name = "MutableCollectionProperty-MacTests";
+			productName = MutableCollectionPropertyTests;
+			productReference = 903967D81C6D7A06008AC686 /* MutableCollectionPropertyTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -195,7 +395,7 @@
 		23AE4B1C1BCE5CF100D1082B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = com.gitdo;
 				TargetAttributes = {
@@ -219,8 +419,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				23AE4B241BCE5CF100D1082B /* MutableCollectionProperty */,
-				23AE4B2E1BCE5CF100D1082B /* MutableCollectionPropertyTests */,
+				23AE4B241BCE5CF100D1082B /* MutableCollectionProperty-iOS */,
+				23AE4B2E1BCE5CF100D1082B /* MutableCollectionProperty-iOSTests */,
+				903967B61C6D79D6008AC686 /* MutableCollectionProperty-Mac */,
+				903967C41C6D7A06008AC686 /* MutableCollectionProperty-MacTests */,
 			);
 		};
 /* End PBXProject section */
@@ -234,6 +436,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		23AE4B2D1BCE5CF100D1082B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903967BE1C6D79D6008AC686 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903967CF1C6D7A06008AC686 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -259,13 +475,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		903967B71C6D79D6008AC686 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				903967B81C6D79D6008AC686 /* MutableCollectionProperty.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903967C71C6D7A06008AC686 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				903967C81C6D7A06008AC686 /* MutableCollectionPropertyTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		23AE4B321BCE5CF100D1082B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 23AE4B241BCE5CF100D1082B /* MutableCollectionProperty */;
+			target = 23AE4B241BCE5CF100D1082B /* MutableCollectionProperty-iOS */;
 			targetProxy = 23AE4B311BCE5CF100D1082B /* PBXContainerItemProxy */;
+		};
+		903967DB1C6D7A4C008AC686 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 903967B61C6D79D6008AC686 /* MutableCollectionProperty-Mac */;
+			targetProxy = 903967DA1C6D7A4C008AC686 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -291,6 +528,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -308,6 +546,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -339,6 +578,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -350,6 +590,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -362,7 +603,6 @@
 		23AE4B3A1BCE5CF100D1082B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -373,19 +613,16 @@
 				);
 				INFOPLIST_FILE = MutableCollectionProperty/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionProperty;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		23AE4B3B1BCE5CF100D1082B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -396,10 +633,9 @@
 				);
 				INFOPLIST_FILE = MutableCollectionProperty/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionProperty;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -414,7 +650,7 @@
 				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)Tests";
 			};
 			name = Debug;
 		};
@@ -428,7 +664,75 @@
 				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)Tests";
+			};
+			name = Release;
+		};
+		903967C01C6D79D6008AC686 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = MutableCollectionProperty/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionProperty;
+				PRODUCT_NAME = "$(PROJECT_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		903967C11C6D79D6008AC686 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = MutableCollectionProperty/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionProperty;
+				PRODUCT_NAME = "$(PROJECT_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		903967D61C6D7A06008AC686 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
+				PRODUCT_NAME = "$(PROJECT_NAME)Tests";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		903967D71C6D7A06008AC686 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
+				);
+				INFOPLIST_FILE = MutableCollectionPropertyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.gitdo.MutableCollectionPropertyTests;
+				PRODUCT_NAME = "$(PROJECT_NAME)Tests";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -444,7 +748,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23AE4B391BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionProperty" */ = {
+		23AE4B391BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23AE4B3A1BCE5CF100D1082B /* Debug */,
@@ -453,11 +757,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		23AE4B3C1BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionPropertyTests" */ = {
+		23AE4B3C1BCE5CF100D1082B /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-iOSTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				23AE4B3D1BCE5CF100D1082B /* Debug */,
 				23AE4B3E1BCE5CF100D1082B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		903967BF1C6D79D6008AC686 /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-Mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				903967C01C6D79D6008AC686 /* Debug */,
+				903967C11C6D79D6008AC686 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		903967D51C6D7A06008AC686 /* Build configuration list for PBXNativeTarget "MutableCollectionProperty-MacTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				903967D61C6D7A06008AC686 /* Debug */,
+				903967D71C6D7A06008AC686 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -6,7 +6,7 @@
 //  Copyright © 2015 com.gitdo. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for MutableCollectionProperty.
 FOUNDATION_EXPORT double MutableCollectionPropertyVersionNumber;
