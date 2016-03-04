@@ -1,6 +1,7 @@
 import Foundation
 import ReactiveCocoa
 import Result
+import Dwifft
 
 public enum CollectionChange<T> {
     case Remove(Int, T)
@@ -24,7 +25,7 @@ public enum CollectionChange<T> {
     }
 }
 
-public final class MutableCollectionProperty<T>: PropertyType {
+public final class MutableCollectionProperty<T: Equatable>: PropertyType {
 
     public typealias Value = [T]
 
@@ -50,9 +51,15 @@ public final class MutableCollectionProperty<T>: PropertyType {
             return value
         }
         set {
+            let diffResult = value.diff(newValue).results.map { step -> CollectionChange<T> in
+                switch step {
+                case .Insert(let(index, el)): return CollectionChange.Insert(index, el)
+                case .Delete(let(index, el)): return CollectionChange.Remove(index, el)
+                }
+            }
             _value = newValue
             _valueObserver.sendNext(newValue)
-            _changesObserver.sendNext(.Composite(newValue.mapWithIndex{CollectionChange.Insert($0, $1)}))
+            _changesObserver.sendNext(.Composite(diffResult))
         }
     }
 
