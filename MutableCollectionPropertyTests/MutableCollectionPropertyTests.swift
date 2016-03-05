@@ -45,9 +45,9 @@ class MutableCollectionPropertyTests: QuickSpec {
                     })
                 }
 
-                it("should notify the changes producer with the replaced enum type") {
-                    let array: [String] = ["test1", "test2"]
-                    let newArray: [String] = ["test2", "test3"]
+                it("should notify the changes producer with the right sequence of changes") {
+                    let array:    [String] = ["test0", "test1", "test2",         "test3"             ]
+                    let newArray: [String] = [         "test1", "test2-changed", "test3", "test4-new"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: {
                         (done) -> Void in
@@ -57,10 +57,30 @@ class MutableCollectionPropertyTests: QuickSpec {
                             case .Next(let change):
                                 switch change {
                                 case .Composite(let changes):
-                                    let indexes = changes.map({$0.index()!})
-                                    let elements = changes.map({$0.element()!})
-                                    expect(indexes) == [0, 1]
-                                    expect(elements) == ["test2", "test3"]
+                                    if case .Remove(let (index, el)) = changes[0] {
+                                        expect(index) == 0
+                                        expect(el) == "test0"
+                                    } else {
+                                        fail()
+                                    }
+                                    if case .Remove(let (index, el)) = changes[1] {
+                                        expect(index) == 2
+                                        expect(el) == "test2"
+                                    } else {
+                                        fail()
+                                    }
+                                    if case .Insert(let (index, el)) = changes[2] {
+                                        expect(index) == 1
+                                        expect(el) == "test2-changed"
+                                    } else {
+                                        fail()
+                                    }
+                                    if case .Insert(let (index, el)) = changes[3] {
+                                        expect(index) == 3
+                                        expect(el) == "test4-new"
+                                    } else {
+                                        fail()
+                                    }
                                     done()
                                 default: break
                                 }
