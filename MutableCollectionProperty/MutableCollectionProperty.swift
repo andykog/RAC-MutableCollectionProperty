@@ -193,7 +193,7 @@ extension Array where Element: Equatable {
     /// Walks back through the generated table to generate the diff.
     private static func diffFromIndices(table: [[Int]], _ x: [Element], _ y: [Element], _ i: Int, _ j: Int) -> [CollectionChange<Element>] {
         if i == 0 && j == 0 {
-            return Diff<Element>(results: [CollectionChange<Element>])
+            return []
         } else if i == 0 {
             return diffFromIndices(table, x, y, i, j-1) + [.Insert(j-1, y[j-1])]
         } else if j == 0 {
