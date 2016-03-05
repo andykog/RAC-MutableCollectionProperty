@@ -10,6 +10,3 @@
 [submodule "Carthage/Checkouts/ReactiveCocoa"]
 	path = Carthage/Checkouts/ReactiveCocoa
 	url = https://github.com/ReactiveCocoa/ReactiveCocoa.git
-[submodule "Carthage/Checkouts/Dwifft"]
-	path = Carthage/Checkouts/Dwifft
-	url = https://github.com/jflinter/Dwifft.git
