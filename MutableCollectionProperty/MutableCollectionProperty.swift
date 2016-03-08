@@ -1,13 +1,17 @@
 import Foundation
 import ReactiveCocoa
-import Result
+import enum Result.NoError
 
-public enum CollectionChange<T> {
+public enum MutableCollectionChangeOperation {
+    case Insertion, Removal
+}
+
+public enum FlatMutableCollectionChange<T> {
     case Remove(Int, T)
     case Insert(Int, T)
-    case Composite([CollectionChange])
+    case Composite([FlatMutableCollectionChange])
     
-    public func index() -> Int? {
+    public var index: Int? {
         switch self {
         case .Remove(let index, _): return index
         case .Insert(let index, _): return index
@@ -15,14 +19,62 @@ public enum CollectionChange<T> {
         }
     }
     
-    public func element() -> T? {
+    public var element: T? {
         switch self {
         case .Remove(_, let element): return element
         case .Insert(_, let element): return element
         default: return nil
         }
     }
+    
+    public var operation: MutableCollectionChangeOperation? {
+        switch self {
+        case .Insert(_, _): return .Insertion
+        case .Remove(_, _): return .Removal
+        default: return nil
+        }
+    }
+    
+    public var asDeepChange: MutableCollectionChange {
+        switch self {
+        case .Remove(let(index, el)): return .Remove([index], el)
+        case .Insert(let(index, el)): return .Insert([index], el)
+        case .Composite(let (changes)): return .Composite(changes.map { $0.asDeepChange })
+        }
+    }
+    
 }
+
+public enum MutableCollectionChange {
+    case Remove([Int], Any)
+    case Insert([Int], Any)
+    case Composite([MutableCollectionChange])
+    
+    public var indexPath: [Int]? {
+        switch self {
+        case .Remove(let indexPath, _): return indexPath
+        case .Insert(let indexPath, _): return indexPath
+        default: return nil
+        }
+    }
+    
+    public var element: Any? {
+        switch self {
+        case .Remove(_, let element): return element
+        case .Insert(_, let element): return element
+        default: return nil
+        }
+    }
+    
+    public var operation: MutableCollectionChangeOperation? {
+        switch self {
+        case .Insert(_, _): return .Insertion
+        case .Remove(_, _): return .Removal
+        default: return nil
+        }
+    }
+}
+
 
 public final class MutableCollectionProperty<T: Equatable>: PropertyType {
 
@@ -31,199 +83,180 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
     
     // MARK: - Private attributes
 
+    private var _rootSection: MutableCollectionSection<T>
     private let _valueObserver: Signal<Value, NoError>.Observer
     private let _valueObserverSignal: Signal<Value, NoError>.Observer
-    private let _changesObserver: Signal<CollectionChange<Value.Element>, NoError>.Observer
-    private let _changesObserverSignal: Signal<CollectionChange<Value.Element>, NoError>.Observer
-    private var _value: Value
+    private let _flatChangesObserver: Signal<FlatMutableCollectionChange<Value.Element>, NoError>.Observer
+    private let _flatChangesObserverSignal: Signal<FlatMutableCollectionChange<Value.Element>, NoError>.Observer
+    private let _changesObserver: Signal<MutableCollectionChange, NoError>.Observer
+    private let _changesObserverSignal: Signal<MutableCollectionChange, NoError>.Observer
     private let _lock = NSRecursiveLock()
+    
 
     // MARK: - Public Attributes
 
     public var producer: SignalProducer<Value, NoError>
     public var signal: Signal<Value, NoError>
-    public var changes: SignalProducer<CollectionChange<Value.Element>, NoError>
-    public var changesSignal: Signal<CollectionChange<Value.Element>, NoError>
+    public var flatChanges: SignalProducer<FlatMutableCollectionChange<Value.Element>, NoError>
+    public var flatChangesSignal: Signal<FlatMutableCollectionChange<Value.Element>, NoError>
+    public var changes: SignalProducer<MutableCollectionChange, NoError>
+    public var changesSignal: Signal<MutableCollectionChange, NoError>
     public var value: Value {
         get {
-            let value = _value
-            return value
+            return self._rootSection._items
         }
         set {
-            let diffResult = value.diff(newValue)
-            _value = newValue
-            _valueObserver.sendNext(newValue)
-            _changesObserver.sendNext(.Composite(diffResult))
+            let diffResult = self.value.diff(newValue)
+            self._rootSection._items = newValue
+            self._valueObserver.sendNext(newValue)
+            self._flatChangesObserver.sendNext(.Composite(diffResult))
         }
     }
 
     // MARK: - Init/Deinit
 
-    public init(_ initialValue: Value) {
-        _lock.name = "org.reactivecocoa.ReactiveCocoa.MutableCollectionProperty"
-        _value = initialValue
-        (producer, _valueObserver) = SignalProducer<Value, NoError>.buffer(1)
-        (changes, _changesObserver) = SignalProducer<CollectionChange<Value.Element>, NoError>.buffer(1)
-        (signal, _valueObserverSignal) = Signal<Value, NoError>.pipe()
-        (changesSignal, _changesObserverSignal) = Signal<CollectionChange<Value.Element>, NoError>.pipe()
+    public init(_ section: MutableCollectionSection<T>) {
+        self._lock.name = "org.reactivecocoa.ReactiveCocoa.MutableCollectionProperty"
+        self._rootSection = section
+        (self.producer, self._valueObserver) = SignalProducer<Value, NoError>.buffer(1)
+        (self.flatChanges, self._flatChangesObserver) = SignalProducer<FlatMutableCollectionChange<Value.Element>, NoError>.buffer(1)
+        (self.signal, self._valueObserverSignal) = Signal<Value, NoError>.pipe()
+        (self.flatChangesSignal, self._flatChangesObserverSignal) = Signal<FlatMutableCollectionChange<Value.Element>, NoError>.pipe()
+        (self.changes, self._changesObserver) = SignalProducer.buffer(1)
+        (self.changesSignal, self._changesObserverSignal) = Signal.pipe()
     }
+    
 
     deinit {
-        _valueObserver.sendCompleted()
-        _valueObserverSignal.sendCompleted()
-        _changesObserver.sendCompleted()
-        _changesObserverSignal.sendCompleted()
+        self._valueObserver.sendCompleted()
+        self._valueObserverSignal.sendCompleted()
+        self._flatChangesObserver.sendCompleted()
+        self._flatChangesObserverSignal.sendCompleted()
+        self._changesObserver.sendCompleted()
+        self._changesObserverSignal.sendCompleted()
+    }
+    
+    convenience init(_ items: [T]) {
+        self.init(MutableCollectionSection(items))
     }
     
     
-    // MARK: - Public
+    
+    // MARK: - Private methods
+    
 
-    public func removeFirst() {
-        if (_value.count == 0) { return }
-        _lock.lock()
-        let deletedElement = _value.removeFirst()
-        _changesObserver.sendNext(.Remove(0, deletedElement))
-        _changesObserverSignal.sendNext(.Remove(0, deletedElement))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
-    }
-
-    public func removeLast() {
-        _lock.lock()
-        if (_value.count == 0) { return }
-        let index = _value.count - 1
-        let deletedElement = _value.removeLast()
-        _changesObserver.sendNext(.Remove(index, deletedElement))
-        _changesObserverSignal.sendNext(.Remove(index, deletedElement))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
+    private func _dispatchDeepChange(e: MutableCollectionChange) {
+        self._changesObserver.sendNext(e)
+        self._changesObserverSignal.sendNext(e)
+        self._dispatchNextValue()
     }
     
-    public func removeAll() {
-        _lock.lock()
-        let copiedValue = _value
-        _value.removeAll()
-        _changesObserver.sendNext(.Composite(copiedValue.mapWithIndex{CollectionChange.Remove($0, $1)}))
-        _changesObserverSignal.sendNext(.Composite(copiedValue.mapWithIndex{CollectionChange.Remove($0, $1)}))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
+    private func _dispatchFlatChange(e: FlatMutableCollectionChange<T>) {
+        self._flatChangesObserver.sendNext(e)
+        self._flatChangesObserverSignal.sendNext(e)
+        self._changesObserver.sendNext(e.asDeepChange)
+        self._changesObserverSignal.sendNext(e.asDeepChange)
+        self._dispatchNextValue()
+    }
+    
+    private func _dispatchNextValue() {
+        self._valueObserver.sendNext(self._rootSection.items)
+        self._valueObserverSignal.sendNext(self._rootSection.items)
+    }
+    
+    private func assertIndexPathNotEmpty(indexPath: [Int]) {
+        if indexPath.count == 0 {
+            fatalError("Got indexPath of length == 0")
+        }
+    }
+    
+    
+    // MARK: - Public methods
+    
+    
+    public func insert(newElement: T, atIndex index: Int) {
+        self._lock.lock()
+        self._rootSection._items.insert(newElement, atIndex: index)
+        self._dispatchFlatChange(.Insert(index, newElement))
+        self._lock.unlock()
+    }
+    
+    public func insert<Z: Equatable>(newElement: Z, atIndexPath indexPath: [Int]) {
+        self.assertIndexPathNotEmpty(indexPath)
+        self._lock.lock()
+        try! self._rootSection._insert(newElement, atIndexPath: indexPath)
+        self._dispatchDeepChange(.Insert(indexPath, newElement))
+        self._lock.unlock()
     }
 
     public func removeAtIndex(index: Int) {
-        _lock.lock()
-        let deletedElement = _value.removeAtIndex(index)
-        _changesObserver.sendNext(CollectionChange.Remove(index, deletedElement))
-        _changesObserverSignal.sendNext(CollectionChange.Remove(index, deletedElement))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
+        self._lock.lock()
+        let deletedElement = self._rootSection._items.removeAtIndex(index)
+        self._dispatchFlatChange(.Remove(index, deletedElement))
+        self._lock.unlock()
     }
     
+    public func removeAtIndexPath(indexPath: [Int]) {
+        self.assertIndexPathNotEmpty(indexPath)
+        self._lock.lock()
+        try! self._dispatchDeepChange(.Remove(indexPath, self._rootSection._removeItem(atIndexPath: indexPath)))
+        self._lock.unlock()
+    }
+    
+    public func removeFirst() {
+        if (self._rootSection._items.count == 0) { return }
+        self._lock.lock()
+        let deletedElement = self._rootSection._items.removeFirst()
+        self._dispatchFlatChange(.Remove(0, deletedElement))
+        self._lock.unlock()
+    }
+
+    public func removeLast() {
+        self._lock.lock()
+        if (self._rootSection._items.count == 0) { return }
+        let index = self._rootSection._items.count - 1
+        let deletedElement = self._rootSection._items.removeLast()
+        self._dispatchFlatChange(.Remove(index, deletedElement))
+        self._lock.unlock()
+    }
+    
+    public func removeAll() {
+        self._lock.lock()
+        let copiedValue = self._rootSection._items
+        self._rootSection._items.removeAll()
+        self._dispatchFlatChange(.Composite(copiedValue.enumerate().map { FlatMutableCollectionChange.Remove($0, $1) }))
+        self._lock.unlock()
+    }
+
     public func append(element: T) {
-        _lock.lock()
-        _value.append(element)
-        _changesObserver.sendNext(.Insert(_value.count - 1, element))
-        _changesObserverSignal.sendNext(.Insert(_value.count - 1, element))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
+        self._lock.lock()
+        self._rootSection._items.append(element)
+        self._dispatchFlatChange(.Insert(self._rootSection._items.count - 1, element))
+        self._lock.unlock()
     }
     
     public func appendContentsOf(elements: [T]) {
-        _lock.lock()
-        let count = _value.count
-        _value.appendContentsOf(elements)
-        _changesObserver.sendNext(.Composite(elements.mapWithIndex{CollectionChange.Insert(count + $0, $1)}))
-        _changesObserverSignal.sendNext(.Composite(elements.mapWithIndex{CollectionChange.Insert(count + $0, $1)}))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
-    }
-    
-    public func insert(newElement: T, atIndex index: Int) {
-        _lock.lock()
-        _value.insert(newElement, atIndex: index)
-        _changesObserver.sendNext(.Insert(index, newElement))
-        _changesObserverSignal.sendNext(.Insert(index, newElement))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
+        self._lock.lock()
+        let count = self._rootSection._items.count
+        self._rootSection._items.appendContentsOf(elements)
+        self._dispatchFlatChange(.Composite(elements.enumerate().map { FlatMutableCollectionChange.Insert(count + $0, $1) }))
+        self._lock.unlock()
     }
     
     public func replace(subRange: Range<Int>, with elements: [T]) {
-        _lock.lock()
-        precondition(subRange.startIndex + subRange.count <= _value.count, "Range out of bounds")
-        var insertsComposite: [CollectionChange<T>] = []
-        var deletesComposite: [CollectionChange<T>] = []
+        self._lock.lock()
+        precondition(subRange.startIndex + subRange.count <= self._rootSection._items.count, "Range out of bounds")
+        var insertsComposite: [FlatMutableCollectionChange<T>] = []
+        var deletesComposite: [FlatMutableCollectionChange<T>] = []
         for (index, element) in elements.enumerate() {
-            let replacedElement = _value[subRange.startIndex+index]
-            _value.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
+            let replacedElement = self._rootSection._items[subRange.startIndex+index]
+            self._rootSection._items.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
             deletesComposite.append(.Remove(subRange.startIndex + index, replacedElement))
             insertsComposite.append(.Insert(subRange.startIndex + index, element))
         }
-        _changesObserver.sendNext(.Composite(deletesComposite))
-        _changesObserverSignal.sendNext(.Composite(deletesComposite))
-        _changesObserver.sendNext(.Composite(insertsComposite))
-        _changesObserverSignal.sendNext(.Composite(insertsComposite))
-        _valueObserver.sendNext(_value)
-        _valueObserverSignal.sendNext(_value)
-        _lock.unlock()
+        self._dispatchFlatChange(.Composite(deletesComposite + insertsComposite))
+        self._lock.unlock()
     }
 }
 
-extension Array where Element: Equatable {
-    
-    func mapWithIndex<T>(transform: (Int, Element) -> T) -> [T] {
-        var newValues: [T] = []
-        for (index, element) in self.enumerate() {
-            newValues.append(transform(index, element))
-        }
-        return newValues
-    }
-    
-    /// Returns the sequence of ArrayDiffResults required to transform one array into another.
-    public func diff(other: [Element]) -> [CollectionChange<Element>] {
-        let table = MemoizedSequenceComparison.buildTable(self, other, self.count, other.count)
-        return Array.diffFromIndices(table, self, other, self.count, other.count)
-    }
-    
-    /// Walks back through the generated table to generate the diff.
-    private static func diffFromIndices(table: [[Int]], _ x: [Element], _ y: [Element], _ i: Int, _ j: Int) -> [CollectionChange<Element>] {
-        if i == 0 && j == 0 {
-            return []
-        } else if i == 0 {
-            return diffFromIndices(table, x, y, i, j-1) + [.Insert(j-1, y[j-1])]
-        } else if j == 0 {
-            return diffFromIndices(table, x, y, i - 1, j) + [.Remove(i-1, x[i-1])]
-        } else if table[i][j] == table[i][j-1] {
-            return diffFromIndices(table, x, y, i, j-1) + [.Insert(j-1, y[j-1])]
-        } else if table[i][j] == table[i-1][j] {
-            return diffFromIndices(table, x, y, i - 1, j) + [.Remove(i-1, x[i-1])]
-        } else {
-            return diffFromIndices(table, x, y, i-1, j-1)
-        }
-    }
-    
-}
 
-struct MemoizedSequenceComparison<T: Equatable> {
-    static func buildTable(x: [T], _ y: [T], _ n: Int, _ m: Int) -> [[Int]] {
-        var table = Array(count: n + 1, repeatedValue: Array(count: m + 1, repeatedValue: 0))
-        for i in 0...n {
-            for j in 0...m {
-                if (i == 0 || j == 0) {
-                    table[i][j] = 0
-                }
-                else if x[i-1] == y[j-1] {
-                    table[i][j] = table[i-1][j-1] + 1
-                } else {
-                    table[i][j] = max(table[i-1][j], table[i][j-1])
-                }
-            }
-        }
-        return table
-    }
-}
