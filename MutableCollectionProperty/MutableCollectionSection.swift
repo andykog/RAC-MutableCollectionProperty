@@ -7,7 +7,7 @@ internal protocol MutableCollectionSectionProtocol {
     mutating func _insert<Z: Equatable>(_: Z, atIndexPath _: [Int]) throws
 }
 
-enum MutableCollectionSectionError: ErrorType {
+public enum MutableCollectionSectionError: ErrorType {
     case CantGetChild(type: String)
     case CantCastValue(type: String, targetType: String)
     case CantInsertElementOfType(elementType: String, sectionType: String)

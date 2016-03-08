@@ -13,9 +13,13 @@ import ReactiveCocoa
 
 @testable import MutableCollectionProperty
 
-class TestSection: MutableCollectionSection {
+class TestSection: MutableCollectionSection<String> {
     // (Must allow subclassing)
+    override init(_ a: [String]) {
+        super.init(a)
+    }
 }
+
 
 class MutableCollectionPropertyTests: QuickSpec {
 
@@ -201,7 +205,7 @@ class MutableCollectionPropertyTests: QuickSpec {
             context("delete at a given indexPath") {
                 
                 it("should notify the main producer") {
-                    let initialValue = TestSection([TestSection(["test1", "test2"])])
+                    let initialValue = MutableCollectionSection([TestSection(["test1", "test2"])])
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: {
                         done in
@@ -392,7 +396,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                 }
                 
                 it("should notify the deepChanges producer about the adition") {
-                    let initialValue = TestSection([TestSection(["test1", "test2"])])
+                    let initialValue = MutableCollectionSection([TestSection(["test1", "test2"])])
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
                         property.changes.startWithNext { change in
@@ -409,7 +413,32 @@ class MutableCollectionPropertyTests: QuickSpec {
             })
             
             context("replacing elements", {
-                // TODOD
+                
+                it("should notify about the change to the main producer") {
+                    let initialValue = [TestSection(["test1", "test2"])]
+                    let property = MutableCollectionProperty(initialValue)
+                    waitUntil(action: { done in
+                        property.producer.startWithNext { newValue in
+                            expect(newValue) == [TestSection(["test0", "test2"])]
+                            done()
+                        }
+                        property.replace(element: "test0", atIndexPath: [0, 0])
+                    })
+                }
+                
+                it("should notify the deepChanges producer about the adition") {
+                    let initialValue = [TestSection(["test1", "test2"])]
+                    let property = MutableCollectionProperty(initialValue)
+                    waitUntil(action: { done in
+                        property.producer.startWithNext { newValue in
+                            expect(newValue) == [TestSection(["test0", "test2"])]
+                            done()
+                        }
+                        property.replace(element: "test0", atIndexPath: [0, 0])
+                    })
+                }
+                
+                
             })
 
         }

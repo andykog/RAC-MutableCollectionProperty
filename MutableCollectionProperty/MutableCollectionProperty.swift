@@ -119,8 +119,8 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
         self._lock.name = "org.reactivecocoa.ReactiveCocoa.MutableCollectionProperty"
         self._rootSection = section
         (self.producer, self._valueObserver) = SignalProducer<Value, NoError>.buffer(1)
-        (self.flatChanges, self._flatChangesObserver) = SignalProducer<FlatMutableCollectionChange<Value.Element>, NoError>.buffer(1)
         (self.signal, self._valueObserverSignal) = Signal<Value, NoError>.pipe()
+        (self.flatChanges, self._flatChangesObserver) = SignalProducer<FlatMutableCollectionChange<Value.Element>, NoError>.buffer(1)
         (self.flatChangesSignal, self._flatChangesObserverSignal) = Signal<FlatMutableCollectionChange<Value.Element>, NoError>.pipe()
         (self.changes, self._changesObserver) = SignalProducer.buffer(1)
         (self.changesSignal, self._changesObserverSignal) = Signal.pipe()
@@ -173,6 +173,10 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
     
     // MARK: - Public methods
     
+    
+    public func objectAtIndexPath<Z: Equatable>(indexPath: [Int]) -> Z {
+        return try! self._rootSection._getItem(atIndexPath: indexPath)
+    }
     
     public func insert(newElement: T, atIndex index: Int) {
         self._lock.lock()
@@ -257,6 +261,15 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
         self._dispatchFlatChange(.Composite(deletesComposite + insertsComposite))
         self._lock.unlock()
     }
+    
+    public func replace<Z: Equatable>(element element: Z, atIndexPath indexPath: [Int]) {
+        self._lock.lock()
+        let deletedElement = try! self._rootSection._removeItem(atIndexPath: indexPath)
+        try! self._rootSection._insert(element, atIndexPath: indexPath)
+        self._dispatchDeepChange(.Composite([.Remove(indexPath, deletedElement), .Insert(indexPath, element)]))
+        self._lock.unlock()
+    }
+
 }
 
 
