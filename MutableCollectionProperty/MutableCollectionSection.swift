@@ -1,11 +1,3 @@
-//
-//  MutableCollectionSection.swift
-//  MutableCollectionProperty
-//
-//  Created by Andrey Kogut on 3/8/16.
-//  Copyright © 2016 com.gitdo. All rights reserved.
-//
-
 import Foundation
 
 internal protocol MutableCollectionSectionProtocol {

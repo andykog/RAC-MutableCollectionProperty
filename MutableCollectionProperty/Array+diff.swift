@@ -1,13 +1,4 @@
-//
-//  Array+diff.swift
-//  MutableCollectionProperty
-//
-//  Created by Andrey Kogut on 3/8/16.
-//  Copyright © 2016 com.gitdo. All rights reserved.
-//
-
 import Foundation
-
 
 private func buildMemoizedSequenceComparisonTable<T: Equatable>(x: [T], _ y: [T], _ n: Int, _ m: Int) -> [[Int]] {
     var table = Array(count: n + 1, repeatedValue: Array(count: m + 1, repeatedValue: 0))
