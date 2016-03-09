@@ -20,6 +20,12 @@ class TestSection: MutableCollectionSection<String> {
     }
 }
 
+extension TestSection: Equatable {}
+func ==(a: TestSection, b: TestSection) -> Bool {
+    return a._items == b._items
+}
+
+
 
 class MutableCollectionPropertyTests: QuickSpec {
 
@@ -430,9 +436,16 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
-                            expect(newValue) == [TestSection(["test0", "test2"])]
-                            done()
+                        property.changes.startWithNext { change in
+                            if case .Composite(let changes) = change {
+                                let indexPaths = changes.map({$0.indexPath!})
+                                let elements = changes.map({$0.element as! String})
+                                let operations = changes.map({$0.operation!})
+                                expect(indexPaths) == [[0, 0], [0, 0]]
+                                expect(elements) == ["test1", "test0"]
+                                expect(operations) == [.Removal, .Insertion]
+                                done()
+                            }
                         }
                         property.replace(element: "test0", atIndexPath: [0, 0])
                     })
@@ -440,6 +453,44 @@ class MutableCollectionPropertyTests: QuickSpec {
                 
                 
             })
+            
+            
+            context("moving elements", {
+                
+                it("should notify about the change to the main producer") {
+                    let initialValue = [TestSection(["test1", "test2", "test3", "test4"])]
+                    let property = MutableCollectionProperty(initialValue)
+                    waitUntil(action: { done in
+                        property.producer.startWithNext { newValue in
+                            expect(newValue) == [TestSection(["test1", "test3", "test2", "test4"])]
+                            done()
+                        }
+                        property.move(fromIndexPath: [0, 1], toIndexPath: [0, 2])
+                    })
+                }
+                
+                it("should notify the deepChanges producer about the adition") {
+                    let initialValue = [TestSection(["test1", "test2", "test3", "test4"])]
+                    let property = MutableCollectionProperty(initialValue)
+                    waitUntil(action: { done in
+                        property.changes.startWithNext { change in
+                            if case .Composite(let changes) = change {
+                                let indexPaths = changes.map({$0.indexPath!})
+                                let elements = changes.map({$0.element as! String})
+                                let operations = changes.map({$0.operation!})
+                                expect(indexPaths) == [[0, 1], [0, 2]]
+                                expect(elements) == ["test2", "test2"]
+                                expect(operations) == [.Removal, .Insertion]
+                                done()
+                            }
+                        }
+                        property.move(fromIndexPath: [0, 1], toIndexPath: [0, 2])
+                    })
+                }
+
+                
+            })
+
 
         }
         

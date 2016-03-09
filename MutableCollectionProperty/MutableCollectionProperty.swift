@@ -76,7 +76,7 @@ public enum MutableCollectionChange {
 }
 
 
-public final class MutableCollectionProperty<T: Equatable>: PropertyType {
+public final class MutableCollectionProperty<T>: PropertyType {
 
     public typealias Value = [T]
 
@@ -174,7 +174,7 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
     // MARK: - Public methods
     
     
-    public func objectAtIndexPath<Z: Equatable>(indexPath: [Int]) -> Z {
+    public func objectAtIndexPath<Z>(indexPath: [Int]) -> Z {
         return try! self._rootSection._getItem(atIndexPath: indexPath)
     }
     
@@ -185,7 +185,7 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
         self._lock.unlock()
     }
     
-    public func insert<Z: Equatable>(newElement: Z, atIndexPath indexPath: [Int]) {
+    public func insert<Z>(newElement: Z, atIndexPath indexPath: [Int]) {
         self.assertIndexPathNotEmpty(indexPath)
         self._lock.lock()
         try! self._rootSection._insert(newElement, atIndexPath: indexPath)
@@ -203,7 +203,8 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
     public func removeAtIndexPath(indexPath: [Int]) {
         self.assertIndexPathNotEmpty(indexPath)
         self._lock.lock()
-        try! self._dispatchDeepChange(.Remove(indexPath, self._rootSection._removeItem(atIndexPath: indexPath)))
+        let deletedElement: String = try! self._rootSection._removeItem(atIndexPath: indexPath)
+        try! self._dispatchDeepChange(.Remove(indexPath, deletedElement))
         self._lock.unlock()
     }
     
@@ -262,11 +263,28 @@ public final class MutableCollectionProperty<T: Equatable>: PropertyType {
         self._lock.unlock()
     }
     
-    public func replace<Z: Equatable>(element element: Z, atIndexPath indexPath: [Int]) {
+    public func replace<Z>(element element: Z, atIndexPath indexPath: [Int]) {
         self._lock.lock()
-        let deletedElement = try! self._rootSection._removeItem(atIndexPath: indexPath)
+        let deletedElement: Z = try! self._rootSection._removeItem(atIndexPath: indexPath)
         try! self._rootSection._insert(element, atIndexPath: indexPath)
         self._dispatchDeepChange(.Composite([.Remove(indexPath, deletedElement), .Insert(indexPath, element)]))
+        self._lock.unlock()
+    }
+    
+    public func move(fromIndex sourceIndex: Int, toIndex targetIndex: Int) -> T {
+        self._lock.lock()
+        let deletedElement = self._rootSection._items.removeAtIndex(sourceIndex)
+        self._rootSection._items.insert(deletedElement, atIndex: targetIndex)
+        self._dispatchFlatChange(.Composite([.Remove(sourceIndex, deletedElement), .Insert(targetIndex, deletedElement)]))
+        self._lock.unlock()
+        return deletedElement
+    }
+    
+    public func move(fromIndexPath sourceIndexPath: [Int], toIndexPath targetIndexPath: [Int]) {
+        self._lock.lock()
+        let deletedElement: Any = try! self._rootSection._removeItem(atIndexPath: sourceIndexPath)
+        try! self._rootSection._insert(deletedElement, atIndexPath: targetIndexPath)
+        self._dispatchDeepChange(.Composite([.Remove(sourceIndexPath, deletedElement), .Insert(targetIndexPath, deletedElement)]))
         self._lock.unlock()
     }
 

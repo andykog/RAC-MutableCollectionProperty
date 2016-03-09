@@ -1,13 +1,16 @@
 import Foundation
 
-private func buildMemoizedSequenceComparisonTable<T: Equatable>(x: [T], _ y: [T], _ n: Int, _ m: Int) -> [[Int]] {
+private func buildMemoizedSequenceComparisonTable<T>(x: [T], _ y: [T], _ n: Int, _ m: Int) -> [[Int]] {
     var table = Array(count: n + 1, repeatedValue: Array(count: m + 1, repeatedValue: 0))
     for i in 0...n {
         for j in 0...m {
             if (i == 0 || j == 0) {
                 table[i][j] = 0
             }
-            else if x[i-1] == y[j-1] {
+            else if let a = x[i-1] as? NSObject,
+                b = y[j-1] as? NSObject
+                where a == b
+            {
                 table[i][j] = table[i-1][j-1] + 1
             } else {
                 table[i][j] = max(table[i-1][j], table[i][j-1])
@@ -18,7 +21,7 @@ private func buildMemoizedSequenceComparisonTable<T: Equatable>(x: [T], _ y: [T]
 }
 
 
-internal extension Array where Element: Equatable {
+internal extension Array {
     
     /// Returns the sequence of ArrayDiffResults required to transform one array into another.
     func diff(other: [Element]) -> [FlatMutableCollectionChange<Element>] {

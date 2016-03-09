@@ -32,7 +32,7 @@ property.producer.startWithNext { newCollection in
   // Do whatever you want with the new collection
   // e.g. tableView.reloadData()
 }
-property.changesProducer.startWithNext { change in
+property.flatChanges.startWithNext { change in
   switch change {
     case Remove(Int, T)
     case Insert(Int, T)
@@ -40,6 +40,45 @@ property.changesProducer.startWithNext { change in
   }
 }
 ```
+
+## Deep collections
+
+Collections with values of type `MutableCollectionSection` allows changing elements deeply inside and track those changes.
+
+:warning: dont rely on `flatChanges`, `flatChangesSignal` when using deep collection, it won't notify on deep data changes. 
+(Although it gives more type checking with flat collection.)
+
+```swift
+let table: MutableCollectionProperty<MutableCollectionSection<String>> =
+  MutableCollectionProperty([
+    MutableCollectionSection(["test1", "test2"]),
+    MutableCollectionSection(["test3", "test4"])
+  ])
+
+property.changes.startWithNext { change in
+  switch change {
+    case Remove([Int], Any)      // [Int] — index path
+    case Insert([Int], Any)      // [Int] — index path
+    case Composite([CollectionChange])
+  }
+}
+```
+
+You can sublass `MutableCollectionSection`:
+```
+class MySection: MutableCollectionSection {
+}
+```
+
+
+
+
+
+
+
+
+
+
 
 ## Developers
 - If you had any problem, contact [pedro@gitdo.io](mailto://pedro@gitdo.io).

@@ -2,9 +2,9 @@ import Foundation
 
 internal protocol MutableCollectionSectionProtocol {
     func _getSubsection(atIndex _: Int) throws -> MutableCollectionSectionProtocol
-    func _getItem<Z: Equatable>(atIndexPath _: [Int]) throws -> Z
-    func _removeItem(atIndexPath _: [Int]) throws -> Any
-    mutating func _insert<Z: Equatable>(_: Z, atIndexPath _: [Int]) throws
+    func _getItem<Z>(atIndexPath _: [Int]) throws -> Z
+    func _removeItem<Z>(atIndexPath _: [Int]) throws -> Z
+    mutating func _insert<Z>(_: Z, atIndexPath _: [Int]) throws
 }
 
 public enum MutableCollectionSectionError: ErrorType {
@@ -25,7 +25,7 @@ public enum MutableCollectionSectionError: ErrorType {
     }
 }
 
-public class MutableCollectionSection<T: Equatable>: MutableCollectionSectionProtocol, Equatable {
+public class MutableCollectionSection<T>: MutableCollectionSectionProtocol {
     
     internal var _items: [T]
     
@@ -55,7 +55,7 @@ public class MutableCollectionSection<T: Equatable>: MutableCollectionSectionPro
         return section
     }
     
-    internal func _insert<Z: Equatable>(el: Z, atIndexPath indexPath: [Int]) throws {
+    internal func _insert<Z>(el: Z, atIndexPath indexPath: [Int]) throws {
         if indexPath.count > 1 {
             var section = try self._getSubsection(atIndex: indexPath.first!)
             let range = Range(start: indexPath.first!, end: indexPath.first! + 1)
@@ -70,7 +70,7 @@ public class MutableCollectionSection<T: Equatable>: MutableCollectionSectionPro
         self._items.insert(elT, atIndex: indexPath.first!)
     }
     
-    internal func _getItem<Z: Equatable>(atIndexPath indexPath: [Int]) throws -> Z {
+    internal func _getItem<Z>(atIndexPath indexPath: [Int]) throws -> Z {
         if indexPath.count > 1 {
             let section = try self._getSubsection(atIndex: indexPath.first!)
             return try section._getItem(atIndexPath: Array(indexPath.dropFirst()))
@@ -83,16 +83,22 @@ public class MutableCollectionSection<T: Equatable>: MutableCollectionSectionPro
         return result
     }
     
-    internal func _removeItem(atIndexPath indexPath: [Int]) throws -> Any {
+    internal func _removeItem<Z>(atIndexPath indexPath: [Int]) throws -> Z {
         if indexPath.count > 1 {
             let section = try self._getSubsection(atIndex: indexPath.first!)
             return try section._removeItem(atIndexPath: Array(indexPath.dropFirst()))
         }
-        return self._items.removeAtIndex(indexPath.first!)
+        let deletedElement = self._items.removeAtIndex(indexPath.first!)
+        guard let deletedElementZ = deletedElement as? Z else {
+            let type = String(deletedElement.dynamicType)
+            let targetType = String(Z.self)
+            throw MutableCollectionSectionError.CantCastValue(type: type, targetType: targetType)
+        }
+        return deletedElementZ
     }
     
 }
 
-public func ==<T>(a: MutableCollectionSection<T>, b: MutableCollectionSection<T>) -> Bool {
+public func ==<T: Equatable>(a: MutableCollectionSection<T>, b: MutableCollectionSection<T>) -> Bool {
     return a._items == b._items
 }
