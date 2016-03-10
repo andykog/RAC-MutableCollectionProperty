@@ -64,20 +64,23 @@ property.changes.startWithNext { change in
 }
 ```
 
-You can sublass `MutableCollectionSection`:
+You can sublass `MutableCollectionSection` so it suits your needs:
 ```
-class MySection: MutableCollectionSection {
+class UITableViewSectionData: MutableCollectionSection<NSManagedObject> {
+    let name: String?
+    let indexTitle: String?
+    init(objects: [NSManagedObject], sectionName name: String?, indexTitle: String?) {
+        self.name = name
+        self.indexTitle = indexTitle
+        super.init(objects)
+    }
 }
 ```
 
 
+## Real-world example
 
-
-
-
-
-
-
+Take a look at (RACFRC)[https://github.com/andykog/RACFRC] source.
 
 
 ## Developers

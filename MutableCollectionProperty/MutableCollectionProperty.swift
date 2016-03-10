@@ -109,7 +109,7 @@ public final class MutableCollectionProperty<T>: PropertyType {
             let diffResult = self.value.diff(newValue)
             self._rootSection._items = newValue
             self._valueObserver.sendNext(newValue)
-            self._flatChangesObserver.sendNext(.Composite(diffResult))
+            self._dispatchFlatChange(.Composite(diffResult))
         }
     }
 
@@ -178,6 +178,10 @@ public final class MutableCollectionProperty<T>: PropertyType {
         return try! self._rootSection._getItem(atIndexPath: indexPath)
     }
     
+    public func objectAtIndexPath<Z>(indexPath: NSIndexPath) -> Z {
+        return self.objectAtIndexPath(indexPath.asArray)
+    }
+    
     public func insert(newElement: T, atIndex index: Int) {
         self._lock.lock()
         self._rootSection._items.insert(newElement, atIndex: index)
@@ -191,6 +195,10 @@ public final class MutableCollectionProperty<T>: PropertyType {
         try! self._rootSection._insert(newElement, atIndexPath: indexPath)
         self._dispatchDeepChange(.Insert(indexPath, newElement))
         self._lock.unlock()
+    }
+    
+    public func insert<Z>(newElement: Z, atIndexPath indexPath: NSIndexPath) {
+        self.insert(newElement, atIndexPath: indexPath.asArray)
     }
 
     public func removeAtIndex(index: Int) {
@@ -206,6 +214,10 @@ public final class MutableCollectionProperty<T>: PropertyType {
         let deletedElement: String = try! self._rootSection._removeItem(atIndexPath: indexPath)
         try! self._dispatchDeepChange(.Remove(indexPath, deletedElement))
         self._lock.unlock()
+    }
+    
+    public func removeAtIndexPath(indexPath: NSIndexPath) {
+        self.removeAtIndexPath(indexPath.asArray)
     }
     
     public func removeFirst() {
@@ -271,6 +283,10 @@ public final class MutableCollectionProperty<T>: PropertyType {
         self._lock.unlock()
     }
     
+    public func replace<Z>(element element: Z, atIndexPath indexPath: NSIndexPath) {
+        self.replace(element: element, atIndexPath: indexPath.asArray)
+    }
+    
     public func move(fromIndex sourceIndex: Int, toIndex targetIndex: Int) -> T {
         self._lock.lock()
         let deletedElement = self._rootSection._items.removeAtIndex(sourceIndex)
@@ -287,7 +303,17 @@ public final class MutableCollectionProperty<T>: PropertyType {
         self._dispatchDeepChange(.Composite([.Remove(sourceIndexPath, deletedElement), .Insert(targetIndexPath, deletedElement)]))
         self._lock.unlock()
     }
+    
+    public func move(fromIndexPath sourceIndexPath: NSIndexPath, toIndexPath targetIndexPath: NSIndexPath) {
+        self.move(fromIndexPath: sourceIndexPath.asArray, toIndexPath: targetIndexPath.asArray)
+    }
 
 }
 
-
+private extension NSIndexPath {
+    var asArray: [Int] {
+        let arr = Array(count: self.length, repeatedValue: 0)
+        self.getIndexes(UnsafeMutablePointer<Int>(arr))
+        return arr
+    }
+}
