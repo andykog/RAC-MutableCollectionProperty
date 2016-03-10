@@ -42,8 +42,8 @@ property.flatChanges.startWithNext { change in
 ```
 :warning:
 don't rely on `.flatChanges` (`.flatChangesSignal`) when using deep collection, it won't notify on deep data changes,
-although it gives you more type checking with flat collection,
-use `.changes` (`.changesSignal`) instad.
+although it gives you more type checking with flat collection.
+Use `.changes` (`.changesSignal`) for deep collections.
 
 
 ## Deep collections
