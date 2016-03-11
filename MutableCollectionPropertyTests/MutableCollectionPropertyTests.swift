@@ -13,8 +13,7 @@ import ReactiveCocoa
 
 @testable import MutableCollectionProperty
 
-class TestSection: MutableCollectionSection<String> {
-    // (Must allow subclassing)
+class TestSection: MutableCollectionProperty<String> {
     override init(_ a: [String]) {
         super.init(a)
     }
@@ -22,9 +21,14 @@ class TestSection: MutableCollectionSection<String> {
 
 extension TestSection: Equatable {}
 func ==(a: TestSection, b: TestSection) -> Bool {
-    return a._items == b._items
+    return a.value == b.value
 }
 
+extension NSString: WithID {
+    var id: Int {
+        return self.hashValue
+    }
+}
 
 
 class MutableCollectionPropertyTests: QuickSpec {
@@ -211,7 +215,7 @@ class MutableCollectionPropertyTests: QuickSpec {
             context("delete at a given indexPath") {
                 
                 it("should notify the main producer") {
-                    let initialValue = MutableCollectionSection([TestSection(["test1", "test2"])])
+                    let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: {
                         done in
@@ -402,7 +406,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                 }
                 
                 it("should notify the deepChanges producer about the adition") {
-                    let initialValue = MutableCollectionSection([TestSection(["test1", "test2"])])
+                    let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
                         property.changes.startWithNext { change in
@@ -496,4 +500,65 @@ class MutableCollectionPropertyTests: QuickSpec {
         
     }
 
+}
+
+
+class WeakSetTests: QuickSpec {
+    
+    override func spec() {
+        
+        describe("adding and removing elements") {
+
+            it("should add elements") {
+                var a: NSString! = NSString(string: "A")
+                var weakSet = WeakSet<NSString>()
+                
+                weakSet.insert(a)
+                expect(Array(weakSet)) == [a]
+                
+                weakSet.remove(a!)
+                expect(Array(weakSet)) == []
+                expect(weakSet.contains(a)) == false
+            }
+            
+        
+            it("should remove elements") {
+                var a: NSString! = NSString(string: "A")
+                var b: NSString! = NSString(string: "B")
+                var weakSet = WeakSet(a, b)
+                
+                weakSet.remove(a)
+                expect(Array(weakSet)) == [b]
+                expect(weakSet.contains(a)) == false
+                
+                weakSet.remove(b)
+                expect(Array(weakSet)) == []
+                expect(weakSet.contains(b)) == false
+            }
+            
+        }
+        
+        describe("references") {
+
+            it("should be weak") {
+                var a: NSString! = NSString(string: "A")
+                var b: NSString! = NSString(string: "B")
+                
+                var weakSet = WeakSet(a, b)
+                expect(Array(weakSet).count) == 2
+                
+                weakSet.insert(a)
+                expect(Array(weakSet).count) == 2
+                
+                a = nil
+                expect(Array(weakSet)) == [b]
+                
+                b = nil
+                expect(Array(weakSet)) == []
+            }
+            
+        }
+        
+    }
+    
 }

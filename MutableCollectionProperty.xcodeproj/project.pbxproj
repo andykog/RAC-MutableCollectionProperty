@@ -11,7 +11,10 @@
 		23AE4B301BCE5CF100D1082B /* MutableCollectionProperty.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23AE4B251BCE5CF100D1082B /* MutableCollectionProperty.framework */; };
 		23AE4B351BCE5CF100D1082B /* MutableCollectionPropertyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */; };
 		23AE4B461BCE5DAF00D1082B /* MutableCollectionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */; };
-		41C373761C8EFB2B008A6C31 /* MutableCollectionSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C373751C8EFB2B008A6C31 /* MutableCollectionSection.swift */; };
+		413E7D101C92EF6B00A0AA21 /* WeakSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413E7D0F1C92EF6B00A0AA21 /* WeakSet.swift */; };
+		413E7D121C930EE000A0AA21 /* MutableCollectionChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413E7D111C930EE000A0AA21 /* MutableCollectionChange.swift */; };
+		413E7D141C930EF500A0AA21 /* MutableCollectionChangeOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413E7D131C930EF500A0AA21 /* MutableCollectionChangeOperation.swift */; };
+		413E7D161C930F1C00A0AA21 /* FlatMutableCollectionChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413E7D151C930F1C00A0AA21 /* FlatMutableCollectionChange.swift */; };
 		41C373781C8EFB6B008A6C31 /* Array+diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41C373771C8EFB6B008A6C31 /* Array+diff.swift */; };
 		903967B81C6D79D6008AC686 /* MutableCollectionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */; };
 		903967BD1C6D79D6008AC686 /* MutableCollectionProperty.h in Headers */ = {isa = PBXBuildFile; fileRef = 23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -165,7 +168,10 @@
 		23AE4B341BCE5CF100D1082B /* MutableCollectionPropertyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutableCollectionPropertyTests.swift; sourceTree = "<group>"; };
 		23AE4B361BCE5CF100D1082B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableCollectionProperty.swift; sourceTree = "<group>"; };
-		41C373751C8EFB2B008A6C31 /* MutableCollectionSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableCollectionSection.swift; sourceTree = "<group>"; };
+		413E7D0F1C92EF6B00A0AA21 /* WeakSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakSet.swift; sourceTree = "<group>"; };
+		413E7D111C930EE000A0AA21 /* MutableCollectionChange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableCollectionChange.swift; sourceTree = "<group>"; };
+		413E7D131C930EF500A0AA21 /* MutableCollectionChangeOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableCollectionChangeOperation.swift; sourceTree = "<group>"; };
+		413E7D151C930F1C00A0AA21 /* FlatMutableCollectionChange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlatMutableCollectionChange.swift; sourceTree = "<group>"; };
 		41C373771C8EFB6B008A6C31 /* Array+diff.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+diff.swift"; sourceTree = "<group>"; };
 		903967C21C6D79D6008AC686 /* MutableCollectionProperty.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MutableCollectionProperty.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		903967D81C6D7A06008AC686 /* MutableCollectionPropertyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MutableCollectionPropertyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -298,8 +304,11 @@
 				23AE4B2A1BCE5CF100D1082B /* Info.plist */,
 				23AE4B281BCE5CF100D1082B /* MutableCollectionProperty.h */,
 				23AE4B451BCE5DAF00D1082B /* MutableCollectionProperty.swift */,
-				41C373751C8EFB2B008A6C31 /* MutableCollectionSection.swift */,
 				41C373771C8EFB6B008A6C31 /* Array+diff.swift */,
+				413E7D0F1C92EF6B00A0AA21 /* WeakSet.swift */,
+				413E7D131C930EF500A0AA21 /* MutableCollectionChangeOperation.swift */,
+				413E7D111C930EE000A0AA21 /* MutableCollectionChange.swift */,
+				413E7D151C930F1C00A0AA21 /* FlatMutableCollectionChange.swift */,
 			);
 			path = MutableCollectionProperty;
 			sourceTree = "<group>";
@@ -550,9 +559,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41C373761C8EFB2B008A6C31 /* MutableCollectionSection.swift in Sources */,
+				413E7D141C930EF500A0AA21 /* MutableCollectionChangeOperation.swift in Sources */,
+				413E7D101C92EF6B00A0AA21 /* WeakSet.swift in Sources */,
+				413E7D161C930F1C00A0AA21 /* FlatMutableCollectionChange.swift in Sources */,
 				23AE4B461BCE5DAF00D1082B /* MutableCollectionProperty.swift in Sources */,
 				41C373781C8EFB6B008A6C31 /* Array+diff.swift in Sources */,
+				413E7D121C930EE000A0AA21 /* MutableCollectionChange.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
