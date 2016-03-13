@@ -9,11 +9,11 @@ internal protocol WithID: class {
 internal protocol MutableCollectionSectionProtocol: WithID {
     var _anyItems: [Any] { get }
     func _getSubsection(atIndex _: Int) throws -> MutableCollectionSectionProtocol
-    func _getItem<Z>(atIndexPath _: [Int]) throws -> Z
-    func _removeItem<Z>(atIndexPath _: [Int]) throws -> Z
+    func _getItem(atIndexPath _: [Int]) throws -> Any
+    func _removeItem(atIndexPath _: [Int]) throws -> Any
     func addParent(_: MutableCollectionSectionProtocol)
     func _handleChange(_: MutableCollectionChange)
-    func _insert<Z>(_: Z, atIndexPath _: [Int]) throws
+    func _insert(_: Any, atIndexPath _: [Int]) throws
 }
 
 public enum MutableCollectionSectionError: ErrorType {
@@ -121,6 +121,17 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     
     // MARK: - Private methods
     
+    internal func _handleChange(change: MutableCollectionChange) {
+        self._changesQuee.append(change)
+        for parent in self._parents {
+            if let parent = parent as? MutableCollectionSectionProtocol {
+                if let index = parent._anyItems.indexOf({ $0 as? AnyObject === self }) {
+                    parent._handleChange(change.increasedDepth(index))
+                }
+            }
+        }
+    }
+    
     private func _dispatchDeepChange() {
         if (self._changesQuee.count > 0) {
             let event: MutableCollectionChange = self._changesQuee.count > 1
@@ -159,7 +170,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         return section
     }
     
-    internal func _insert<Z>(el: Z, atIndexPath indexPath: [Int]) throws {
+    internal func _insert(el: Any, atIndexPath indexPath: [Int]) throws {
         let index = indexPath.first!
         let restIndexPath = Array(indexPath.dropFirst())
         if restIndexPath.count > 0 {
@@ -177,22 +188,17 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._handleChange(.Insert([index], elT))
     }
     
-    internal func _getItem<Z>(atIndexPath indexPath: [Int]) throws -> Z {
+    internal func _getItem(atIndexPath indexPath: [Int]) throws -> Any {
         let index = indexPath.first!
         let restIndexPath = Array(indexPath.dropFirst())
         if restIndexPath.count > 0 {
             let section = try self._getSubsection(atIndex: index)
             return try section._getItem(atIndexPath: restIndexPath)
         }
-        guard let result = self._items[index] as? Z else {
-            let type = String(self._items[indexPath.first!].dynamicType)
-            let targetType = String(Z.self)
-            throw MutableCollectionSectionError.CantCastValue(type: type, targetType: targetType)
-        }
-        return result
+        return self._items[index]
     }
     
-    internal func _removeItem<Z>(atIndexPath indexPath: [Int]) throws -> Z {
+    internal func _removeItem(atIndexPath indexPath: [Int]) throws -> Any {
         let index = indexPath.first!
         let restIndexPath = Array(indexPath.dropFirst())
         if restIndexPath.count > 0 {
@@ -200,26 +206,9 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
             return try section._removeItem(atIndexPath: restIndexPath)
         }
         let deletedElement = self._items.removeAtIndex(index)
-        guard let deletedElementZ = deletedElement as? Z else {
-            let type = String(deletedElement.dynamicType)
-            let targetType = String(Z.self)
-            throw MutableCollectionSectionError.CantCastValue(type: type, targetType: targetType)
-        }
-        self._handleChange(.Remove([index], deletedElementZ))
-        return deletedElementZ
+        self._handleChange(.Remove([index], deletedElement))
+        return deletedElement
     }
-    
-    internal func _handleChange(change: MutableCollectionChange) {
-        self._changesQuee.append(change)
-        for parent in self._parents {
-            if let parent = parent as? MutableCollectionSectionProtocol {
-                if let index = parent._anyItems.indexOf({ $0 as? AnyObject === self }) {
-                    parent._handleChange(change.increasedDepth(index))
-                }
-            }
-        }
-    }
-
     
     // MARK: - Public methods
     
@@ -227,11 +216,11 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         return self[index]
     }
     
-    public func objectAtIndexPath<Z>(indexPath: [Int]) -> Z {
+    public func objectAtIndexPath(indexPath: [Int]) -> Any {
         return try! self._getItem(atIndexPath: indexPath)
     }
     
-    public func objectAtIndexPath<Z>(indexPath: NSIndexPath) -> Z {
+    public func objectAtIndexPath(indexPath: NSIndexPath) -> Any {
         return self.objectAtIndexPath(indexPath.asArray)
     }
     
@@ -263,7 +252,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public func removeAtIndexPath(indexPath: [Int]) {
         self.assertIndexPathNotEmpty(indexPath)
         self._transition {
-            let deletedElement: String = try! self._removeItem(atIndexPath: indexPath)
+            try! self._removeItem(atIndexPath: indexPath)
         }
     }
     
@@ -328,7 +317,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     
     public func replace<Z>(element element: Z, atIndexPath indexPath: [Int]) {
         self._transition {
-            let deleted: String = try! self._removeItem(atIndexPath: indexPath)
+            try! self._removeItem(atIndexPath: indexPath)
             try! self._insert(element, atIndexPath: indexPath)
         }
     }
