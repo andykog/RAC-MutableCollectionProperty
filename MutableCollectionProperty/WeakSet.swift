@@ -1,20 +1,19 @@
 
-internal struct WeakSet<T: WithID> {
-    typealias Element = T
+internal struct WeakSet {
     
-    private var contents: [Int: [Entry<Element>]] = [:]
+    private var contents: [Int: [Entry]] = [:]
     
-    init(_ objects: T...) {
+    init(_ objects: WithID...) {
         self.init(objects)
     }
     
-    init(_ objects: [T]) {
+    init(_ objects: [WithID]) {
         for object in objects {
             self.insert(object)
         }
     }
     
-    mutating func insert(newElement: Element) {
+    mutating func insert(newElement: WithID) {
         var entriesAtHash = validEntriesAtHash(newElement.id)
         for entry in entriesAtHash {
             if let existingElement = entry.element {
@@ -28,7 +27,7 @@ internal struct WeakSet<T: WithID> {
         self.contents[newElement.id] = entriesAtHash
     }
     
-    mutating func remove(removeElement: Element) {
+    mutating func remove(removeElement: WithID) {
         let entriesAtHash = validEntriesAtHash(removeElement.id)
         let entriesMinusElement = entriesAtHash.filter { $0.element?.id != removeElement.id }
         if entriesMinusElement.isEmpty {
@@ -38,7 +37,7 @@ internal struct WeakSet<T: WithID> {
         }
     }
     
-    func contains(element: Element) -> Bool {
+    func contains(element: WithID) -> Bool {
         let entriesAtHash = validEntriesAtHash(element.id)
         for entry in entriesAtHash {
             if entry.element?.id == element.id {
@@ -48,7 +47,7 @@ internal struct WeakSet<T: WithID> {
         return false
     }
     
-    private func validEntriesAtHash(hashValue: Int) -> [Entry<Element>] {
+    private func validEntriesAtHash(hashValue: Int) -> [Entry] {
         if let entries = self.contents[hashValue] {
             return entries.filter { $0.element != nil }
         } else {
@@ -57,28 +56,15 @@ internal struct WeakSet<T: WithID> {
     }
 }
 
-private struct Entry<T: WithID> {
-    typealias Element = T
-    weak var _element: AnyObject?
-    var element: T? {
-        get {
-            return self._element as? T
-        }
-        set {
-            self._element = newValue as? AnyObject
-        }
-    }
-    
-    init(element: T) {
-        self._element = element as? AnyObject
-    }
+private struct Entry {
+    weak var element: WithID?
 }
 
 
 // MARK: SequenceType
 
 extension WeakSet : SequenceType {
-    typealias Generator = AnyGenerator<T>
+    typealias Generator = AnyGenerator<WithID>
     
     func generate() -> Generator {
         var contentsGenerator = self.contents.values.generate()

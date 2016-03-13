@@ -31,6 +31,7 @@ extension NSString: WithID {
 }
 
 
+
 class MutableCollectionPropertyTests: QuickSpec {
 
     override func spec() {
@@ -509,15 +510,16 @@ class WeakSetTests: QuickSpec {
         
         describe("adding and removing elements") {
 
+
             it("should add elements") {
                 var a: NSString! = NSString(string: "A")
-                var weakSet = WeakSet<NSString>()
+                var weakSet = WeakSet()
                 
                 weakSet.insert(a)
-                expect(Array(weakSet)) == [a]
+                expect(weakSet.strings) == [a]
                 
                 weakSet.remove(a!)
-                expect(Array(weakSet)) == []
+                expect(weakSet.strings) == []
                 expect(weakSet.contains(a)) == false
             }
             
@@ -528,12 +530,27 @@ class WeakSetTests: QuickSpec {
                 var weakSet = WeakSet(a, b)
                 
                 weakSet.remove(a)
-                expect(Array(weakSet)) == [b]
+                expect(weakSet.strings) == [b]
                 expect(weakSet.contains(a)) == false
                 
                 weakSet.remove(b)
-                expect(Array(weakSet)) == []
+                expect(weakSet.strings) == []
                 expect(weakSet.contains(b)) == false
+            }
+
+        }
+        
+        describe("generator") {
+        
+            it("should iterate over elements") {
+                var a: NSString! = NSString(string: "A")
+                var b: NSString! = NSString(string: "B")
+                var i = 0
+                let weakSet = WeakSet(a, b)
+                for _ in weakSet {
+                    i++
+                }
+                expect(Array(weakSet).count) == 2
             }
             
         }
@@ -551,14 +568,21 @@ class WeakSetTests: QuickSpec {
                 expect(Array(weakSet).count) == 2
                 
                 a = nil
-                expect(Array(weakSet)) == [b]
+                expect(weakSet.strings) == [b]
                 
                 b = nil
-                expect(Array(weakSet)) == []
+                expect(weakSet.strings) == []
             }
             
         }
         
     }
     
+}
+
+
+private extension WeakSet {
+    var strings: [NSString] {
+        return self.map { $0 as! NSString }
+    }
 }

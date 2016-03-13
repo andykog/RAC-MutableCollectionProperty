@@ -2,12 +2,18 @@ import Foundation
 import ReactiveCocoa
 import enum Result.NoError
 
-internal protocol MutableCollectionSectionProtocol {
+internal protocol WithID: class {
+    var id: Int { get }
+}
+
+internal protocol MutableCollectionSectionProtocol: WithID {
+    var _anyItems: [Any] { get }
     func _getSubsection(atIndex _: Int) throws -> MutableCollectionSectionProtocol
     func _getItem<Z>(atIndexPath _: [Int]) throws -> Z
     func _removeItem<Z>(atIndexPath _: [Int]) throws -> Z
-    mutating func _insert<Z>(_: Z, atIndexPath _: [Int]) throws
-    var count: Int { get }
+    func addParent(_: MutableCollectionSectionProtocol)
+    func _handleChange(_: MutableCollectionChange)
+    func _insert<Z>(_: Z, atIndexPath _: [Int]) throws
 }
 
 public enum MutableCollectionSectionError: ErrorType {
@@ -28,11 +34,7 @@ public enum MutableCollectionSectionError: ErrorType {
     }
 }
 
-internal protocol WithID {
-    var id: Int { get }
-}
-
-public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectionProtocol, WithID {
+public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectionProtocol {
     
     public let id: Int
     
@@ -46,6 +48,15 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         (self.flatChangesSignal, self._flatChangesObserverSignal) = Signal<FlatMutableCollectionChange<Value.Element>, NoError>.pipe()
         (self.changes, self._changesObserver) = SignalProducer.buffer(1)
         (self.changesSignal, self._changesObserverSignal) = Signal.pipe()
+        for item in items {
+            if let item = item as? MutableCollectionSectionProtocol {
+                item.addParent(self)
+            }
+        }
+    }
+    
+    func addParent(parent: MutableCollectionSectionProtocol) {
+        self._parents.insert(parent)
     }
     
     deinit {
@@ -67,8 +78,18 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     private let _changesObserver: Signal<MutableCollectionChange, NoError>.Observer
     private let _changesObserverSignal: Signal<MutableCollectionChange, NoError>.Observer
     private let _lock = NSRecursiveLock()
-//    private var _parents = WeakSet<MutableCollectionProperty<MutableCollectionProperty<T>>>()
+    private var _parents = WeakSet()
+    var _anyItems: [Any] {
+        return self.items.map { $0 as Any }
+    }
+    var _changesQuee: [MutableCollectionChange] = []
     
+    private func _transition(closure: () -> Void) {
+        self._lock.lock()
+        closure()
+        self._dispatchDeepChange()
+        self._lock.unlock()
+    }
     
     // MARK: - Public Attributes
     
@@ -95,19 +116,21 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         return self._items
     }
     
-    public var count: Int {
-        return self._items.count
-    }
-    
     public typealias Value = [T]
     
     
     // MARK: - Private methods
     
-    private func _dispatchDeepChange(e: MutableCollectionChange) {
-        self._changesObserver.sendNext(e)
-        self._changesObserverSignal.sendNext(e)
-        self._dispatchNextValue()
+    private func _dispatchDeepChange() {
+        if (self._changesQuee.count > 0) {
+            let event: MutableCollectionChange = self._changesQuee.count > 1
+                ? MutableCollectionChange.Composite(self._changesQuee)
+                : self._changesQuee.first!
+            self._changesQuee = []
+            self._changesObserver.sendNext(event)
+            self._changesObserverSignal.sendNext(event)
+            self._dispatchNextValue()
+        }
     }
     
     private func _dispatchFlatChange(e: FlatMutableCollectionChange<T>) {
@@ -137,10 +160,12 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     internal func _insert<Z>(el: Z, atIndexPath indexPath: [Int]) throws {
-        if indexPath.count > 1 {
-            var section = try self._getSubsection(atIndex: indexPath.first!)
-            let range = Range(start: indexPath.first!, end: indexPath.first! + 1)
-            try section._insert(el, atIndexPath: Array(indexPath.dropFirst()))
+        let index = indexPath.first!
+        let restIndexPath = Array(indexPath.dropFirst())
+        if restIndexPath.count > 0 {
+            let section = try self._getSubsection(atIndex: index)
+            let range = Range(start: index, end: index + 1)
+            try section._insert(el, atIndexPath: restIndexPath)
             return self._items.replaceRange(range, with: [section as! T])
         }
         guard let elT = el as? T else {
@@ -148,15 +173,18 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
             let sectionType = String(T.self)
             throw MutableCollectionSectionError.CantInsertElementOfType(elementType: elementType, sectionType: sectionType)
         }
-        self._items.insert(elT, atIndex: indexPath.first!)
+        self._items.insert(elT, atIndex: index)
+        self._handleChange(.Insert([index], elT))
     }
     
     internal func _getItem<Z>(atIndexPath indexPath: [Int]) throws -> Z {
-        if indexPath.count > 1 {
-            let section = try self._getSubsection(atIndex: indexPath.first!)
-            return try section._getItem(atIndexPath: Array(indexPath.dropFirst()))
+        let index = indexPath.first!
+        let restIndexPath = Array(indexPath.dropFirst())
+        if restIndexPath.count > 0 {
+            let section = try self._getSubsection(atIndex: index)
+            return try section._getItem(atIndexPath: restIndexPath)
         }
-        guard let result = self._items[indexPath.first!] as? Z else {
+        guard let result = self._items[index] as? Z else {
             let type = String(self._items[indexPath.first!].dynamicType)
             let targetType = String(Z.self)
             throw MutableCollectionSectionError.CantCastValue(type: type, targetType: targetType)
@@ -165,26 +193,33 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     internal func _removeItem<Z>(atIndexPath indexPath: [Int]) throws -> Z {
-        if indexPath.count > 1 {
-            let section = try self._getSubsection(atIndex: indexPath.first!)
-            return try section._removeItem(atIndexPath: Array(indexPath.dropFirst()))
+        let index = indexPath.first!
+        let restIndexPath = Array(indexPath.dropFirst())
+        if restIndexPath.count > 0 {
+            let section = try self._getSubsection(atIndex: index)
+            return try section._removeItem(atIndexPath: restIndexPath)
         }
-        let deletedElement = self._items.removeAtIndex(indexPath.first!)
+        let deletedElement = self._items.removeAtIndex(index)
         guard let deletedElementZ = deletedElement as? Z else {
             let type = String(deletedElement.dynamicType)
             let targetType = String(Z.self)
             throw MutableCollectionSectionError.CantCastValue(type: type, targetType: targetType)
         }
+        self._handleChange(.Remove([index], deletedElementZ))
         return deletedElementZ
     }
     
-    
-    internal func handleChange(change: MutableCollectionChange) {
-//        for parent in self._parents {
-//            parent.handleChange(change)
-//        }
+    internal func _handleChange(change: MutableCollectionChange) {
+        self._changesQuee.append(change)
+        for parent in self._parents {
+            if let parent = parent as? MutableCollectionSectionProtocol {
+                if let index = parent._anyItems.indexOf({ $0 as? AnyObject === self }) {
+                    parent._handleChange(change.increasedDepth(index))
+                }
+            }
+        }
     }
-    
+
     
     // MARK: - Public methods
     
@@ -201,18 +236,17 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     public func insert(newElement: T, atIndex index: Int) {
-        self._lock.lock()
-        self._items.insert(newElement, atIndex: index)
-        self._dispatchFlatChange(.Insert(index, newElement))
-        self._lock.unlock()
+        self._transition {
+            self._items.insert(newElement, atIndex: index)
+            self._dispatchFlatChange(.Insert(index, newElement))
+        }
     }
     
     public func insert<Z>(newElement: Z, atIndexPath indexPath: [Int]) {
         self.assertIndexPathNotEmpty(indexPath)
-        self._lock.lock()
-        try! self._insert(newElement, atIndexPath: indexPath)
-        self._dispatchDeepChange(.Insert(indexPath, newElement))
-        self._lock.unlock()
+        self._transition {
+            try! self._insert(newElement, atIndexPath: indexPath)
+        }
     }
     
     public func insert<Z>(newElement: Z, atIndexPath indexPath: NSIndexPath) {
@@ -220,18 +254,17 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     public func removeAtIndex(index: Int) {
-        self._lock.lock()
-        let deletedElement = self._items.removeAtIndex(index)
-        self._dispatchFlatChange(.Remove(index, deletedElement))
-        self._lock.unlock()
+        self._transition {
+            let deletedElement = self._items.removeAtIndex(index)
+            self._dispatchFlatChange(.Remove(index, deletedElement))
+        }
     }
     
     public func removeAtIndexPath(indexPath: [Int]) {
         self.assertIndexPathNotEmpty(indexPath)
-        self._lock.lock()
-        let deletedElement: String = try! self._removeItem(atIndexPath: indexPath)
-        self._dispatchDeepChange(.Remove(indexPath, deletedElement))
-        self._lock.unlock()
+        self._transition {
+            let deletedElement: String = try! self._removeItem(atIndexPath: indexPath)
+        }
     }
     
     public func removeAtIndexPath(indexPath: NSIndexPath) {
@@ -240,86 +273,82 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     
     public func removeFirst() {
         if (self._items.count == 0) { return }
-        self._lock.lock()
-        let deletedElement = self._items.removeFirst()
-        self._dispatchFlatChange(.Remove(0, deletedElement))
-        self._lock.unlock()
+        self._transition {
+            let deletedElement = self._items.removeFirst()
+            self._dispatchFlatChange(.Remove(0, deletedElement))
+        }
     }
     
     public func removeLast() {
-        self._lock.lock()
         if (self._items.count == 0) { return }
-        let index = self._items.count - 1
-        let deletedElement = self._items.removeLast()
-        self._dispatchFlatChange(.Remove(index, deletedElement))
-        self._lock.unlock()
+        self._transition {
+            let index = self._items.count - 1
+            let deletedElement = self._items.removeLast()
+            self._dispatchFlatChange(.Remove(index, deletedElement))
+        }
     }
     
     public func removeAll() {
-        self._lock.lock()
-        let copiedValue = self._items
-        self._items.removeAll()
-        self._dispatchFlatChange(.Composite(copiedValue.enumerate().map { FlatMutableCollectionChange.Remove($0, $1) }))
-        self._lock.unlock()
+        self._transition {
+            let copiedValue = self._items
+            self._items.removeAll()
+            self._dispatchFlatChange(.Composite(copiedValue.enumerate().map { FlatMutableCollectionChange.Remove($0, $1) }))
+        }
     }
     
     public func append(element: T) {
-        self._lock.lock()
-        self._items.append(element)
-        self._dispatchFlatChange(.Insert(self._items.count - 1, element))
-        self._lock.unlock()
+        self._transition {
+            self._items.append(element)
+            self._dispatchFlatChange(.Insert(self._items.count - 1, element))
+        }
     }
     
     public func appendContentsOf(elements: [T]) {
-        self._lock.lock()
-        let count = self._items.count
-        self._items.appendContentsOf(elements)
-        self._dispatchFlatChange(.Composite(elements.enumerate().map { FlatMutableCollectionChange.Insert(count + $0, $1) }))
-        self._lock.unlock()
+        self._transition {
+            let count = self._items.count
+            self._items.appendContentsOf(elements)
+            self._dispatchFlatChange(.Composite(elements.enumerate().map { FlatMutableCollectionChange.Insert(count + $0, $1) }))
+        }
     }
     
     public func replace(subRange: Range<Int>, with elements: [T]) {
-        self._lock.lock()
-        precondition(subRange.startIndex + subRange.count <= self._items.count, "Range out of bounds")
-        var insertsComposite: [FlatMutableCollectionChange<T>] = []
-        var deletesComposite: [FlatMutableCollectionChange<T>] = []
-        for (index, element) in elements.enumerate() {
-            let replacedElement = self._items[subRange.startIndex+index]
-            self._items.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
-            deletesComposite.append(.Remove(subRange.startIndex + index, replacedElement))
-            insertsComposite.append(.Insert(subRange.startIndex + index, element))
+        self._transition {
+            precondition(subRange.startIndex + subRange.count <= self._items.count, "Range out of bounds")
+            var insertsComposite: [FlatMutableCollectionChange<T>] = []
+            var deletesComposite: [FlatMutableCollectionChange<T>] = []
+            for (index, element) in elements.enumerate() {
+                let replacedElement = self._items[subRange.startIndex+index]
+                self._items.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
+                deletesComposite.append(.Remove(subRange.startIndex + index, replacedElement))
+                insertsComposite.append(.Insert(subRange.startIndex + index, element))
+            }
+            self._dispatchFlatChange(.Composite(deletesComposite + insertsComposite))
         }
-        self._dispatchFlatChange(.Composite(deletesComposite + insertsComposite))
-        self._lock.unlock()
     }
     
     public func replace<Z>(element element: Z, atIndexPath indexPath: [Int]) {
-        self._lock.lock()
-        let deletedElement: Z = try! self._removeItem(atIndexPath: indexPath)
-        try! self._insert(element, atIndexPath: indexPath)
-        self._dispatchDeepChange(.Composite([.Remove(indexPath, deletedElement), .Insert(indexPath, element)]))
-        self._lock.unlock()
+        self._transition {
+            let deleted: String = try! self._removeItem(atIndexPath: indexPath)
+            try! self._insert(element, atIndexPath: indexPath)
+        }
     }
     
     public func replace<Z>(element element: Z, atIndexPath indexPath: NSIndexPath) {
         self.replace(element: element, atIndexPath: indexPath.asArray)
     }
     
-    public func move(fromIndex sourceIndex: Int, toIndex targetIndex: Int) -> T {
-        self._lock.lock()
-        let deletedElement = self._items.removeAtIndex(sourceIndex)
-        self._items.insert(deletedElement, atIndex: targetIndex)
-        self._dispatchFlatChange(.Composite([.Remove(sourceIndex, deletedElement), .Insert(targetIndex, deletedElement)]))
-        self._lock.unlock()
-        return deletedElement
+    public func move(fromIndex sourceIndex: Int, toIndex targetIndex: Int) {
+        self._transition {
+            let deletedElement = self._items.removeAtIndex(sourceIndex)
+            self._items.insert(deletedElement, atIndex: targetIndex)
+        }
     }
     
     public func move(fromIndexPath sourceIndexPath: [Int], toIndexPath targetIndexPath: [Int]) {
-        self._lock.lock()
-        let deletedElement: Any = try! self._removeItem(atIndexPath: sourceIndexPath)
-        try! self._insert(deletedElement, atIndexPath: targetIndexPath)
-        self._dispatchDeepChange(.Composite([.Remove(sourceIndexPath, deletedElement), .Insert(targetIndexPath, deletedElement)]))
-        self._lock.unlock()
+        self._transition {
+            let deletedElement: Any = try! self._removeItem(atIndexPath: sourceIndexPath)
+            try! self._insert(deletedElement, atIndexPath: targetIndexPath)
+        }
     }
     
     public func move(fromIndexPath sourceIndexPath: NSIndexPath, toIndexPath targetIndexPath: NSIndexPath) {
