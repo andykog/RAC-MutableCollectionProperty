@@ -512,7 +512,7 @@ class WeakSetTests: QuickSpec {
 
 
             it("should add elements") {
-                var a: NSString! = NSString(string: "A")
+                let a: NSString! = NSString(string: "A")
                 var weakSet = WeakSet()
                 
                 weakSet.insert(a)
@@ -525,8 +525,8 @@ class WeakSetTests: QuickSpec {
             
         
             it("should remove elements") {
-                var a: NSString! = NSString(string: "A")
-                var b: NSString! = NSString(string: "B")
+                let a: NSString! = NSString(string: "A")
+                let b: NSString! = NSString(string: "B")
                 var weakSet = WeakSet(a, b)
                 
                 weakSet.remove(a)
@@ -543,8 +543,8 @@ class WeakSetTests: QuickSpec {
         describe("generator") {
         
             it("should iterate over elements") {
-                var a: NSString! = NSString(string: "A")
-                var b: NSString! = NSString(string: "B")
+                let a: NSString! = NSString(string: "A")
+                let b: NSString! = NSString(string: "B")
                 var i = 0
                 let weakSet = WeakSet(a, b)
                 for _ in weakSet {

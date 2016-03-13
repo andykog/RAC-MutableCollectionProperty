@@ -29,12 +29,4 @@ public enum FlatMutableCollectionChange<T> {
         }
     }
     
-    public var asDeepChange: MutableCollectionChange {
-        switch self {
-        case .Remove(let(index, el)): return .Remove([index], el)
-        case .Insert(let(index, el)): return .Insert([index], el)
-        case .Composite(let (changes)): return .Composite(changes.map { $0.asDeepChange })
-        }
-    }
-    
 }

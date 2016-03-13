@@ -79,17 +79,15 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     private let _changesObserverSignal: Signal<MutableCollectionChange, NoError>.Observer
     private let _lock = NSRecursiveLock()
     private var _parents = WeakSet()
-    var _anyItems: [Any] {
+    
+    
+    // MARK: - Internal attributes
+    
+    internal var _anyItems: [Any] {
         return self.items.map { $0 as Any }
     }
-    var _changesQuee: [MutableCollectionChange] = []
+    internal var _changesQuee: [MutableCollectionChange] = []
     
-    private func _transition(closure: () -> Void) {
-        self._lock.lock()
-        closure()
-        self._dispatchDeepChange()
-        self._lock.unlock()
-    }
     
     // MARK: - Public Attributes
     
@@ -105,10 +103,12 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
             return self._items
         }
         set {
-            let diffResult = self.value.diff(newValue)
-            self._items = newValue
-            self._valueObserver.sendNext(newValue)
-            self._dispatchFlatChange(.Composite(diffResult))
+            self._transition {
+                let diffResult = self.value.diff(newValue)
+                self._items = newValue
+                self._handleChange(.Composite(diffResult))
+                self._valueObserver.sendNext(newValue)
+            }
         }
     }
     
@@ -121,35 +121,23 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     
     // MARK: - Private methods
     
-    internal func _handleChange(change: MutableCollectionChange) {
-        self._changesQuee.append(change)
-        for parent in self._parents {
-            if let parent = parent as? MutableCollectionSectionProtocol {
-                if let index = parent._anyItems.indexOf({ $0 as? AnyObject === self }) {
-                    parent._handleChange(change.increasedDepth(index))
-                }
-            }
-        }
-    }
-    
-    private func _dispatchDeepChange() {
+    private func _transition(closure: () -> Void) {
+        self._lock.lock()
+        closure()
         if (self._changesQuee.count > 0) {
-            let event: MutableCollectionChange = self._changesQuee.count > 1
+            let change: MutableCollectionChange = self._changesQuee.count > 1
                 ? MutableCollectionChange.Composite(self._changesQuee)
                 : self._changesQuee.first!
+            if let flatChange: FlatMutableCollectionChange<T> = change.flat() {
+                self._flatChangesObserver.sendNext(flatChange)
+                self._flatChangesObserverSignal.sendNext(flatChange)
+            }
             self._changesQuee = []
-            self._changesObserver.sendNext(event)
-            self._changesObserverSignal.sendNext(event)
+            self._changesObserver.sendNext(change)
+            self._changesObserverSignal.sendNext(change)
             self._dispatchNextValue()
         }
-    }
-    
-    private func _dispatchFlatChange(e: FlatMutableCollectionChange<T>) {
-        self._flatChangesObserver.sendNext(e)
-        self._flatChangesObserverSignal.sendNext(e)
-        self._changesObserver.sendNext(e.asDeepChange)
-        self._changesObserverSignal.sendNext(e.asDeepChange)
-        self._dispatchNextValue()
+        self._lock.unlock()
     }
     
     private func _dispatchNextValue() {
@@ -160,6 +148,20 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     private func assertIndexPathNotEmpty(indexPath: [Int]) {
         if indexPath.count == 0 {
             fatalError("Got indexPath of length == 0")
+        }
+    }
+    
+    
+    // MARK: - Internal methods
+    
+    internal func _handleChange(change: MutableCollectionChange) {
+        self._changesQuee.append(change)
+        for parent in self._parents {
+            if let parent = parent as? MutableCollectionSectionProtocol {
+                if let index = parent._anyItems.indexOf({ $0 as? AnyObject === self }) {
+                    parent._handleChange(change.increasedDepth(index))
+                }
+            }
         }
     }
     
@@ -227,7 +229,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public func insert(newElement: T, atIndex index: Int) {
         self._transition {
             self._items.insert(newElement, atIndex: index)
-            self._dispatchFlatChange(.Insert(index, newElement))
+            self._handleChange(.Insert([index], newElement))
         }
     }
     
@@ -245,7 +247,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public func removeAtIndex(index: Int) {
         self._transition {
             let deletedElement = self._items.removeAtIndex(index)
-            self._dispatchFlatChange(.Remove(index, deletedElement))
+            self._handleChange(.Remove([index], deletedElement))
         }
     }
     
@@ -264,7 +266,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         if (self._items.count == 0) { return }
         self._transition {
             let deletedElement = self._items.removeFirst()
-            self._dispatchFlatChange(.Remove(0, deletedElement))
+            self._handleChange(.Remove([0], deletedElement))
         }
     }
     
@@ -273,7 +275,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._transition {
             let index = self._items.count - 1
             let deletedElement = self._items.removeLast()
-            self._dispatchFlatChange(.Remove(index, deletedElement))
+            self._handleChange(.Remove([index], deletedElement))
         }
     }
     
@@ -281,14 +283,14 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._transition {
             let copiedValue = self._items
             self._items.removeAll()
-            self._dispatchFlatChange(.Composite(copiedValue.enumerate().map { FlatMutableCollectionChange.Remove($0, $1) }))
+            self._handleChange(.Composite(copiedValue.enumerate().map { MutableCollectionChange.Remove([$0], $1) }))
         }
     }
     
     public func append(element: T) {
         self._transition {
             self._items.append(element)
-            self._dispatchFlatChange(.Insert(self._items.count - 1, element))
+            self._handleChange(.Insert([self._items.count - 1], element))
         }
     }
     
@@ -296,22 +298,22 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._transition {
             let count = self._items.count
             self._items.appendContentsOf(elements)
-            self._dispatchFlatChange(.Composite(elements.enumerate().map { FlatMutableCollectionChange.Insert(count + $0, $1) }))
+            self._handleChange(.Composite(elements.enumerate().map { MutableCollectionChange.Insert([count + $0], $1) }))
         }
     }
     
     public func replace(subRange: Range<Int>, with elements: [T]) {
         self._transition {
             precondition(subRange.startIndex + subRange.count <= self._items.count, "Range out of bounds")
-            var insertsComposite: [FlatMutableCollectionChange<T>] = []
-            var deletesComposite: [FlatMutableCollectionChange<T>] = []
+            var insertsComposite: [MutableCollectionChange] = []
+            var deletesComposite: [MutableCollectionChange] = []
             for (index, element) in elements.enumerate() {
                 let replacedElement = self._items[subRange.startIndex+index]
                 self._items.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
-                deletesComposite.append(.Remove(subRange.startIndex + index, replacedElement))
-                insertsComposite.append(.Insert(subRange.startIndex + index, element))
+                deletesComposite.append(.Remove([subRange.startIndex + index], replacedElement))
+                insertsComposite.append(.Insert([subRange.startIndex + index], element))
             }
-            self._dispatchFlatChange(.Composite(deletesComposite + insertsComposite))
+            self._handleChange(.Composite(deletesComposite + insertsComposite))
         }
     }
     

@@ -36,5 +36,18 @@ public enum MutableCollectionChange {
         case .Composite(let changes): return .Composite(changes.map { $0.increasedDepth(index) })
         }
     }
+    
+    internal func flat<Z>() -> FlatMutableCollectionChange<Z>? {
+        switch self {
+        case .Remove(let indexPath, let el):
+            if indexPath.count > 1 { return nil }
+            return .Remove(indexPath.first!, el as! Z)
+        case .Insert(let indexPath, let el):
+            if indexPath.count > 1 { return nil }
+            return .Insert(indexPath.first!, el as! Z)
+        case .Composite(let changes):
+            return .Composite(changes.map({ $0.flat() }).filter({ $0 != nil }).map({ $0! }))
+        }
+    }
 
 }

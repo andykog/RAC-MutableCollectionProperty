@@ -24,23 +24,23 @@ private func buildMemoizedSequenceComparisonTable<T>(x: [T], _ y: [T], _ n: Int,
 internal extension Array {
     
     /// Returns the sequence of ArrayDiffResults required to transform one array into another.
-    func diff(other: [Element]) -> [FlatMutableCollectionChange<Element>] {
+    func diff(other: [Element]) -> [MutableCollectionChange] {
         let table = buildMemoizedSequenceComparisonTable(self, other, self.count, other.count)
         return Array.diffFromIndices(table, self, other, self.count, other.count)
     }
     
     /// Walks back through the generated table to generate the diff.
-    private static func diffFromIndices(table: [[Int]], _ x: [Element], _ y: [Element], _ i: Int, _ j: Int) -> [FlatMutableCollectionChange<Element>] {
+    private static func diffFromIndices(table: [[Int]], _ x: [Element], _ y: [Element], _ i: Int, _ j: Int) -> [MutableCollectionChange] {
         if i == 0 && j == 0 {
             return []
         } else if i == 0 {
-            return diffFromIndices(table, x, y, i, j-1) + [.Insert(j-1, y[j-1])]
+            return diffFromIndices(table, x, y, i, j-1) + [.Insert([j-1], y[j-1])]
         } else if j == 0 {
-            return diffFromIndices(table, x, y, i - 1, j) + [.Remove(i-1, x[i-1])]
+            return diffFromIndices(table, x, y, i - 1, j) + [.Remove([i-1], x[i-1])]
         } else if table[i][j] == table[i][j-1] {
-            return diffFromIndices(table, x, y, i, j-1) + [.Insert(j-1, y[j-1])]
+            return diffFromIndices(table, x, y, i, j-1) + [.Insert([j-1], y[j-1])]
         } else if table[i][j] == table[i-1][j] {
-            return diffFromIndices(table, x, y, i - 1, j) + [.Remove(i-1, x[i-1])]
+            return diffFromIndices(table, x, y, i - 1, j) + [.Remove([i-1], x[i-1])]
         } else {
             return diffFromIndices(table, x, y, i-1, j-1)
         }
