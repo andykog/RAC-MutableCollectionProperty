@@ -43,7 +43,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                         property.value = ["test2", "test3"]
                     })
                 }
-
+                
                 it("should notify the flatChanges producer with the right sequence of changes") {
                     let array:    [String] = ["test0", "test1", "test2",         "test3"             ]
                     let newArray: [String] = [         "test1", "test2-changed", "test3", "test4-new"]
@@ -63,6 +63,24 @@ class MutableCollectionPropertyTests: QuickSpec {
                         property.value = newArray
                     })
                 }
+                
+                it("should continue notifying the deepChanges producer after full update") {
+                    let initialValue = [TestSection(["test0"])]
+                    let nextValue = [TestSection(["test1", "test2"])]
+                    let property = MutableCollectionProperty(initialValue)
+                    property.value = nextValue
+                    waitUntil(action: { done in
+                        property.changes.startWithNext { change in
+                            if case .Insert(let indexPath, let element) = change {
+                                expect(indexPath) == [0, 0]
+                                expect(element as? String) == "test0"
+                                done()
+                            }
+                        }
+                        property.insert("test0", atIndexPath: [0, 0])
+                    })
+                }
+
             }
 
         }

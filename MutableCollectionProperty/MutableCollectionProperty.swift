@@ -29,7 +29,6 @@ public enum MutableCollectionSectionError: ErrorType {
             return "Cannot cast value of type \(type) to \(targetType)"
         case .CantInsertElementOfType(elementType: let elementType, sectionType: let sectionType):
             return "Attempt to inset element of type \(elementType) in section of type \(sectionType)"
-            
         }
     }
 }
@@ -97,6 +96,17 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public var flatChangesSignal: Signal<FlatMutableCollectionChange<Value.Element>, NoError>
     public var changes: SignalProducer<MutableCollectionChange, NoError>
     public var changesSignal: Signal<MutableCollectionChange, NoError>
+    public var isUpdating = false {
+        didSet {
+            if self.isUpdating == oldValue { return }
+            if self.isUpdating  {
+                self._lock.lock()
+            } else {
+                self._lock.unlock()
+                self._dispatchChanges()
+            }
+        }
+    }
     
     public var value: Value {
         get {
@@ -106,6 +116,11 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
             self._transition {
                 let diffResult = self.value.diff(newValue)
                 self._items = newValue
+                for item in newValue {
+                    if let item = item as? MutableCollectionSectionProtocol {
+                        item.addParent(self)
+                    }
+                }
                 self._handleChange(.Composite(diffResult))
                 self._valueObserver.sendNext(newValue)
             }
@@ -122,8 +137,27 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     // MARK: - Private methods
     
     private func _transition(closure: () -> Void) {
-        self._lock.lock()
-        closure()
+        if self.isUpdating {
+            closure()
+        } else {
+            self.isUpdating = true
+            closure()
+            self.isUpdating = false
+        }
+    }
+    
+    private func _dispatchNextValue() {
+        self._valueObserver.sendNext(self.items)
+        self._valueObserverSignal.sendNext(self.items)
+    }
+    
+    private func assertIndexPathNotEmpty(indexPath: [Int]) {
+        if indexPath.count == 0 {
+            fatalError("Got indexPath of length == 0")
+        }
+    }
+    
+    private func _dispatchChanges() {
         if (self._changesQuee.count > 0) {
             let change: MutableCollectionChange = self._changesQuee.count > 1
                 ? MutableCollectionChange.Composite(self._changesQuee)
@@ -136,18 +170,6 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
             self._changesObserver.sendNext(change)
             self._changesObserverSignal.sendNext(change)
             self._dispatchNextValue()
-        }
-        self._lock.unlock()
-    }
-    
-    private func _dispatchNextValue() {
-        self._valueObserver.sendNext(self.items)
-        self._valueObserverSignal.sendNext(self.items)
-    }
-    
-    private func assertIndexPathNotEmpty(indexPath: [Int]) {
-        if indexPath.count == 0 {
-            fatalError("Got indexPath of length == 0")
         }
     }
     
@@ -215,7 +237,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     // MARK: - Public methods
     
     public subscript(index: Int) -> T {
-        return self[index]
+        return self.value[index]
     }
     
     public func objectAtIndexPath(indexPath: [Int]) -> Any {
