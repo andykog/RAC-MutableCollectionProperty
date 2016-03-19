@@ -1,5 +1,5 @@
 import Foundation
 
 public enum MutableCollectionChangeOperation {
-    case Insertion, Removal
+    case Insertion, Removal, Update
 }

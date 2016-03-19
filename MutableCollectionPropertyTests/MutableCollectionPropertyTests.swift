@@ -370,6 +370,11 @@ class MutableCollectionPropertyTests: QuickSpec {
                                 let indexes = changes.map({$0.index!})
                                 let elements = changes.map({$0.element!})
                                 let operations = changes.map({$0.operation!})
+                                /* TODO: Make it dispatch .Update for intersected elements:
+                                expect(indexes) == [0, 1]
+                                expect(elements) == ["test3", "test4"]
+                                expect(operations) == [.Update, .Update]
+                                */
                                 expect(indexes) == [0, 1, 0, 1]
                                 expect(elements) == ["test1", "test2", "test3", "test4"]
                                 expect(operations) == [.Removal, .Removal, .Insertion, .Insertion]
@@ -432,10 +437,10 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
                         property.producer.startWithNext { newValue in
-                            expect(newValue) == [TestSection(["test0", "test2"])]
+                            expect(newValue) == [TestSection(["test8", "test2"])]
                             done()
                         }
-                        property.replace(element: "test0", atIndexPath: [0, 0])
+                        property.replace(elementAtIndexPath: [0, 0], withElement: "test8")
                     })
                 }
                 
@@ -444,17 +449,13 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
                         property.changes.startWithNext { change in
-                            if case .Composite(let changes) = change {
-                                let indexPaths = changes.map({$0.indexPath!})
-                                let elements = changes.map({$0.element as! String})
-                                let operations = changes.map({$0.operation!})
-                                expect(indexPaths) == [[0, 0], [0, 0]]
-                                expect(elements) == ["test1", "test0"]
-                                expect(operations) == [.Removal, .Insertion]
+                            if case .Update(let indexPath, let element) = change {
+                                expect(indexPath) == [0, 0]
+                                expect(element as? String) == "test0"
                                 done()
                             }
                         }
-                        property.replace(element: "test0", atIndexPath: [0, 0])
+                        property.replace(elementAtIndexPath: [0, 0], withElement: "test0")
                     })
                 }
                 
