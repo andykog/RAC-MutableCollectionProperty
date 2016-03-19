@@ -47,11 +47,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         (self.flatChangesSignal, self._flatChangesObserverSignal) = Signal<FlatMutableCollectionChange<Value.Element>, NoError>.pipe()
         (self.changes, self._changesObserver) = SignalProducer.buffer(1)
         (self.changesSignal, self._changesObserverSignal) = Signal.pipe()
-        for item in items {
-            if let item = item as? MutableCollectionSectionProtocol {
-                item.addParent(self)
-            }
-        }
+        self.connectSections(inArray: items)
     }
     
     func addParent(parent: MutableCollectionSectionProtocol) {
@@ -116,11 +112,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
             self._transition {
                 let diffResult = self.value.diff(newValue)
                 self._items = newValue
-                for item in newValue {
-                    if let item = item as? MutableCollectionSectionProtocol {
-                        item.addParent(self)
-                    }
-                }
+                self.connectSections(inArray: newValue)
                 self._handleChange(.Composite(diffResult))
                 self._valueObserver.sendNext(newValue)
             }
@@ -173,6 +165,18 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         }
     }
     
+    private func connectSection(element: T) {
+        if let section = element as? MutableCollectionSectionProtocol {
+            section.addParent(self)
+        }
+    }
+    
+    private func connectSections(inArray elements: [T]) {
+        for element in elements {
+            self.connectSection(element)
+        }
+    }
+    
     
     // MARK: - Internal methods
     
@@ -184,6 +188,9 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
                     parent._handleChange(change.increasedDepth(index))
                 }
             }
+        }
+        if self.isUpdating == false { // otherwise changes will be dispatched on update finished
+            self._dispatchChanges()
         }
     }
     
@@ -209,6 +216,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
             throw MutableCollectionSectionError.CantInsertElementOfType(elementType: elementType, sectionType: sectionType)
         }
         self._items.insert(elT, atIndex: index)
+        self.connectSection(elT)
         self._handleChange(.Insert([index], elT))
     }
     
@@ -251,6 +259,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public func insert(newElement: T, atIndex index: Int) {
         self._transition {
             self._items.insert(newElement, atIndex: index)
+            self.connectSection(newElement)
             self._handleChange(.Insert([index], newElement))
         }
     }
@@ -312,6 +321,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public func append(element: T) {
         self._transition {
             self._items.append(element)
+            self.connectSection(element)
             self._handleChange(.Insert([self._items.count - 1], element))
         }
     }
@@ -320,6 +330,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._transition {
             let count = self._items.count
             self._items.appendContentsOf(elements)
+            self.connectSections(inArray: elements)
             self._handleChange(.Composite(elements.enumerate().map { MutableCollectionChange.Insert([count + $0], $1) }))
         }
     }
@@ -335,6 +346,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
                 deletesComposite.append(.Remove([subRange.startIndex + index], replacedElement))
                 insertsComposite.append(.Insert([subRange.startIndex + index], element))
             }
+            self.connectSections(inArray: elements)
             self._handleChange(.Composite(deletesComposite + insertsComposite))
         }
     }
