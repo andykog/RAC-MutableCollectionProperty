@@ -52,7 +52,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                         property.flatChanges.startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
-                                let elements = changes.map({$0.element!})
+                                let elements = changes.map({$0.oldElement ?? $0.newElement!})
                                 let operations = changes.map({$0.operation!})
                                 expect(indexes) == [0, 2, 1, 3]
                                 expect(elements) == ["test0", "test2", "test2-changed", "test4-new"]
@@ -198,7 +198,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                         property.flatChanges.startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
-                                let elements = changes.map({$0.element!})
+                                let elements = changes.map({$0.oldElement!})
                                 let operations = changes.map({$0.operation!})
                                 expect(indexes) == [0, 1]
                                 expect(elements) == ["test1", "test2"]
@@ -302,7 +302,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                         property.flatChanges.startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
-                                let elements = changes.map({$0.element!})
+                                let elements = changes.map({$0.newElement!})
                                 let operations = changes.map({$0.operation!})
                                 expect(indexes) == [2, 3]
                                 expect(elements) == ["test3", "test4"]
@@ -368,16 +368,13 @@ class MutableCollectionPropertyTests: QuickSpec {
                         property.flatChanges.startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
-                                let elements = changes.map({$0.element!})
+                                let oldElements = changes.map({$0.oldElement!})
+                                let newElements = changes.map({$0.newElement!})
                                 let operations = changes.map({$0.operation!})
-                                /* TODO: Make it dispatch .Update for intersected elements:
                                 expect(indexes) == [0, 1]
-                                expect(elements) == ["test3", "test4"]
+                                expect(oldElements) == ["test1", "test2"]
+                                expect(newElements) == ["test3", "test4"]
                                 expect(operations) == [.Update, .Update]
-                                */
-                                expect(indexes) == [0, 1, 0, 1]
-                                expect(elements) == ["test1", "test2", "test3", "test4"]
-                                expect(operations) == [.Removal, .Removal, .Insertion, .Insertion]
                                 done()
                             }
                         }
@@ -390,14 +387,6 @@ class MutableCollectionPropertyTests: QuickSpec {
         }
         
         context("deep adding elements") {
-            
-            context("appending elements individually", { () -> Void in
-                // TODOD
-            })
-            
-            context("appending elements from another array", {
-                // TODOD
-            })
             
             context("inserting elements", {
                 
@@ -449,9 +438,10 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
                         property.changes.startWithNext { change in
-                            if case .Update(let indexPath, let element) = change {
+                            if case .Update(let indexPath, let oldElement, let newElement) = change {
                                 expect(indexPath) == [0, 0]
-                                expect(element as? String) == "test0"
+                                expect(oldElement as? String) == "test1"
+                                expect(newElement as? String) == "test0"
                                 done()
                             }
                         }
@@ -484,7 +474,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                         property.changes.startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexPaths = changes.map({$0.indexPath!})
-                                let elements = changes.map({$0.element as! String})
+                                let elements = changes.map({$0.oldElement as? String ?? $0.newElement as! String})
                                 let operations = changes.map({$0.operation!})
                                 expect(indexPaths) == [[0, 1], [0, 2]]
                                 expect(elements) == ["test2", "test2"]

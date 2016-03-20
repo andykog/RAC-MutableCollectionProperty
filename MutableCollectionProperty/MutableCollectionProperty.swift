@@ -7,39 +7,32 @@ internal protocol WithID: class {
 }
 
 internal protocol MutableCollectionSectionProtocol: WithID {
-    var _anyItems: [Any] { get }
     var _parents: WeakSet { get set }
     
     func _getSubsection(atIndex _: Int) throws -> MutableCollectionSectionProtocol
     func _getSubsection(atIndexPath _: [Int]) throws -> MutableCollectionSectionProtocol
     func _getAnyItem(_: Int) -> Any
+    func _indexOfAny(predicate: Any -> Bool) -> Int?
     
     func _insert(anyElement newElement: Any, atIndex index: Int) throws
-    func _replace(anyElementAtIndex index: Int, withElement element: Any) throws
     func _remove(atIndex index: Int) -> Any
+    func _replace(anyElementAtIndex index: Int, withElement element: Any) throws -> Any
     
     func _handleChange(_: MutableCollectionChange)
     
     func _connectSection(element: Any)
     func _connectSections(elements: [Any])
-    
-    //func _remove(index: Int) -> Any
-    //func insert(newElement: Any, atIndexPath indexPath: [Int])
-    //func removeAtIndexPath(indexPath: [Int])
 }
 
-public enum MutableCollectionSectionError: ErrorType {
+public enum MutableCollectionSectionError: ErrorType, CustomStringConvertible {
     case CantGetChild(type: String)
-    case CantCastValue(type: String, targetType: String)
     case CantInsertElementOfType(elementType: String, sectionType: String)
     case CantReplaceWithElementOfType(elementType: String, sectionType: String)
     
-    var description: String {
+    public var description: String {
         switch self {
         case .CantGetChild(type: let type):
             return "Can't get child of an element of type \(type)"
-        case .CantCastValue(type: let type, targetType: let targetType):
-            return "Cannot cast value of type \(type) to \(targetType)"
         case .CantInsertElementOfType(elementType: let elementType, sectionType: let sectionType):
             return "Attempt to inset element of type \(elementType) in section of type \(sectionType)"
         case .CantReplaceWithElementOfType(elementType: let elementType, sectionType: let sectionType):
@@ -50,6 +43,8 @@ public enum MutableCollectionSectionError: ErrorType {
 
 public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectionProtocol {
     
+    public typealias Value = [T]
+
     public let id: Int
     
     init (_ items: [T]) {
@@ -84,16 +79,12 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     private let _changesObserver: Signal<MutableCollectionChange, NoError>.Observer
     private let _changesObserverSignal: Signal<MutableCollectionChange, NoError>.Observer
     private let _lock = NSRecursiveLock()
+    private var _changesQuee: [MutableCollectionChange] = []
     
     
     // MARK: - Internal attributes
     
     internal var _parents = WeakSet()
-    
-    internal var _anyItems: [Any] {
-        return self.items.map { $0 as Any }
-    }
-    internal var _changesQuee: [MutableCollectionChange] = []
     
     
     // MARK: - Public Attributes
@@ -104,6 +95,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public var flatChangesSignal: Signal<FlatMutableCollectionChange<Value.Element>, NoError>
     public var changes: SignalProducer<MutableCollectionChange, NoError>
     public var changesSignal: Signal<MutableCollectionChange, NoError>
+    
     public var isUpdating = false {
         didSet {
             if self.isUpdating == oldValue { return }
@@ -135,8 +127,6 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         return self._items
     }
     
-    public typealias Value = [T]
-    
     
     // MARK: - Private methods
     
@@ -156,7 +146,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._valueObserverSignal.sendNext(self.items)
     }
     
-    private func assertIndexPathNotEmpty(indexPath: [Int]) {
+    private func _assertIndexPathNotEmpty(indexPath: [Int]) {
         if indexPath.count == 0 {
             fatalError("Got indexPath of length == 0")
         }
@@ -203,7 +193,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._changesQuee.append(change)
         for parent in self._parents {
             if let parent = parent as? MutableCollectionSectionProtocol {
-                if let index = parent._anyItems.indexOf({ $0 as? AnyObject === self }) {
+                if let index = parent._indexOfAny({ $0 as? AnyObject === self }) {
                     parent._handleChange(change.increasedDepth(index))
                 }
             }
@@ -235,10 +225,6 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         return self._items[index]
     }
     
-    internal func _getItem(atIndexPath indexPath: [Int]) throws -> Any {
-        return try self._getSubsection(atIndexPath: indexPath.withoutLast)._getAnyItem(indexPath.last!)
-    }
-    
     internal func _insert(anyElement newElement: Any, atIndex index: Int) throws {
         guard let elT = newElement as? T else {
             let elementType = String(newElement.dynamicType)
@@ -248,14 +234,15 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         self._items.insert(elT, atIndex: index)
     }
     
-    internal func _replace(anyElementAtIndex index: Int, withElement element: Any) throws {
+    internal func _replace(anyElementAtIndex index: Int, withElement element: Any) throws -> Any {
         guard let elT = element as? T else {
             let elementType = String(element.dynamicType)
             let sectionType = String(T.self)
             throw MutableCollectionSectionError.CantReplaceWithElementOfType(elementType: elementType, sectionType: sectionType)
         }
-        self._items.removeAtIndex(index)
+        let removed = self._items.removeAtIndex(index)
         self._items.insert(elT, atIndex: index)
+        return removed
     }
 
     
@@ -263,9 +250,18 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
         return self._items.removeAtIndex(index)
     }
     
+    internal func _indexOfAny(predicate: Any -> Bool) -> Int? {
+        return self._items.indexOf(predicate)
+    }
+    
     
     // MARK: - Public methods
     
+    
+    public func indexOf(predicate: T -> Bool) -> Int? {
+        return self._items.indexOf(predicate)
+    }
+
     
     // Getting element
     
@@ -274,7 +270,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     public func objectAtIndexPath(indexPath: [Int]) -> Any {
-        return try! self._getItem(atIndexPath: indexPath)
+        return try! self._getSubsection(atIndexPath: indexPath.withoutLast)._getAnyItem(indexPath.last!)
     }
     
     
@@ -289,7 +285,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     public func insert(newElement: Any, atIndexPath indexPath: [Int]) {
-        self.assertIndexPathNotEmpty(indexPath)
+        self._assertIndexPathNotEmpty(indexPath)
         self._transition {
             let section = try! self._getSubsection(atIndexPath: indexPath.withoutLast)
             try! section._insert(anyElement: newElement, atIndex: indexPath.last!)
@@ -310,7 +306,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     public func removeAtIndexPath(indexPath: [Int]) -> Any {
-        self.assertIndexPathNotEmpty(indexPath)
+        self._assertIndexPathNotEmpty(indexPath)
         return self._transition {
             let section = try! self._getSubsection(atIndexPath: indexPath.withoutLast)
             let deletedElement = section._remove(atIndex: indexPath.last!)
@@ -370,34 +366,31 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     public func replace(subRange: Range<Int>, with elements: [T]) {
         self._transition {
             precondition(subRange.startIndex + subRange.count <= self._items.count, "Range out of bounds")
-            var insertsComposite: [MutableCollectionChange] = []
-            var deletesComposite: [MutableCollectionChange] = []
             for (index, element) in elements.enumerate() {
-                let replacedElement = self._items[subRange.startIndex+index]
-                self._items.replaceRange(Range<Int>(start: subRange.startIndex+index, end: subRange.startIndex+index+1), with: [element])
-                deletesComposite.append(.Remove([subRange.startIndex + index], replacedElement))
-                insertsComposite.append(.Insert([subRange.startIndex + index], element))
+                let oldElement = self._items.removeAtIndex(subRange.startIndex+index)
+                self._items.insert(element, atIndex: subRange.startIndex+index)
+                self._handleChange(.Update([index], oldElement, element))
             }
             self._connectSections(elements)
-            self._handleChange(.Composite(deletesComposite + insertsComposite))
         }
     }
     
     public func replace(elementAtIndex index: Int, withElement element: T) {
         self._transition {
-            self._remove(atIndex: index)
+            let oldElement = self._remove(atIndex: index)
             try! self._insert(anyElement: element, atIndex: index)
             self._connectSection(element)
-            self._handleChange(.Update([index], element))
+            self._handleChange(.Update([index], oldElement, element))
         }
     }
     
     public func replace(elementAtIndexPath indexPath: [Int], withElement element: Any) {
+        self._assertIndexPathNotEmpty(indexPath)
         self._transition {
             let section = try! self._getSubsection(atIndexPath: indexPath.withoutLast)
-            try! section._replace(anyElementAtIndex: indexPath.last!, withElement: element)
+            let oldElement = try! section._replace(anyElementAtIndex: indexPath.last!, withElement: element)
             section._connectSection(element)
-            section._handleChange(.Update([indexPath.last!], element))
+            section._handleChange(.Update([indexPath.last!], oldElement, element))
         }
     }
     
@@ -414,6 +407,8 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     }
     
     public func move(fromIndexPath sourceIndexPath: [Int], toIndexPath targetIndexPath: [Int]) {
+        self._assertIndexPathNotEmpty(sourceIndexPath)
+        self._assertIndexPathNotEmpty(targetIndexPath)
         self._transition {
             let sourceSection = try! self._getSubsection(atIndexPath: sourceIndexPath.withoutLast)
             let targetSection = try! self._getSubsection(atIndexPath: targetIndexPath.withoutLast)
