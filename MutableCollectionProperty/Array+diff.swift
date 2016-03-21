@@ -7,11 +7,14 @@ private func buildMemoizedSequenceComparisonTable<T>(x: [T], _ y: [T], _ n: Int,
             if (i == 0 || j == 0) {
                 table[i][j] = 0
             }
-            else if let a = x[i-1] as? NSObject,
-                b = y[j-1] as? NSObject
-                where a == b
+            else if let a = x[i-1] as? NSObject, b = y[j-1] as? NSObject where a == b
             {
                 table[i][j] = table[i-1][j-1] + 1
+            }
+            else if let a = x[i-1] as? AnyObject, b = y[j-1] as? AnyObject where a === b
+            {
+                table[i][j] = table[i-1][j-1] + 1
+ 
             } else {
                 table[i][j] = max(table[i-1][j], table[i][j-1])
             }
