@@ -36,7 +36,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test2", "test3"]
                             done()
                         }
@@ -49,7 +49,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let newArray: [String] = [         "test1", "test2-changed", "test3", "test4-new"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
                                 let elements = changes.map({$0.oldElement ?? $0.newElement!})
@@ -93,7 +93,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test1"]
                             done()
                         }
@@ -105,7 +105,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Remove(let index, let element) = change {
                                 expect(index) == 1
                                 expect(element) == "test2"
@@ -123,7 +123,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test1"]
                             done()
                         }
@@ -135,7 +135,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Remove(let index, let element) = change {
                                 expect(index) == 1
                                 expect(element) == "test2"
@@ -153,7 +153,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test2"]
                             done()
                         }
@@ -165,7 +165,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Remove(let index, let element) = change {
                                 expect(index) == 0
                                 expect(element) == "test1"
@@ -182,7 +182,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == []
                             done()
                         }
@@ -195,7 +195,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
                         
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
                                 let elements = changes.map({$0.oldElement!})
@@ -210,6 +210,56 @@ class MutableCollectionPropertyTests: QuickSpec {
                     })
                 }
             })
+            
+            context("update or insert with subscript", {
+                
+                it("should notify the deletion to the main producer") {
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { done in
+                        property.producer.take(1).startWithNext { newValue in
+                            expect(newValue) == ["test0", "test2"]
+                            done()
+                        }
+                        property[0] = "test0"
+                    })
+                }
+                
+                it("should notify the changes producer with the update") {
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { done in
+                        
+                        property.changes.take(1).startWithNext { change in
+                            if case .Update(let indexPath, let oldElement, let newElement) = change {
+                                expect(indexPath) == [0]
+                                expect(oldElement as? String) == "test1"
+                                expect(newElement as? String) == "test0"
+                                done()
+                            }
+                        }
+                        property[0] = "test0"
+                    })
+                }
+                
+                it("should notify the changes producer with the insertion") {
+                    let array: [String] = ["test1", "test2"]
+                    let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
+                    waitUntil(action: { done in
+                        
+                        property.changes.take(1).startWithNext { change in
+                            if case .Insert(let indexPath, let newElement) = change {
+                                expect(indexPath) == [2]
+                                expect(newElement as? String) == "test0"
+                                done()
+                            }
+                        }
+                        property[2] = "test0"
+                    })
+                }
+
+            })
+
 
         }
         
@@ -222,7 +272,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: {
                         done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == []
                             done()
                         }
@@ -234,7 +284,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.changes.startWithNext { change in
+                        property.changes.take(1).startWithNext { change in
                             if case .Remove(let indexPath, let element) = change {
                                 expect(indexPath) == [0, 1]
                                 expect(element as? String) == "test2"
@@ -256,7 +306,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test1", "test2", "test3"]
                             done()
                         }
@@ -268,7 +318,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Insert(let index, let element) = change {
                                 expect(index) == 2
                                 expect(element) == "test3"
@@ -287,7 +337,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test1", "test2", "test3", "test4"]
                             done()
                         }
@@ -299,7 +349,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
                                 let elements = changes.map({$0.newElement!})
@@ -322,7 +372,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test0", "test1", "test2"]
                             done()
                         }
@@ -334,7 +384,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Insert(let index, let element) = change {
                                 expect(index) == 0
                                 expect(element) == "test0"
@@ -353,7 +403,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == ["test3", "test4"]
                             done()
                         }
@@ -365,7 +415,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let array: [String] = ["test1", "test2"]
                     let property: MutableCollectionProperty<String> = MutableCollectionProperty(array)
                     waitUntil(action: { done in
-                        property.flatChanges.startWithNext { change in
+                        property.flatChanges.take(1).startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexes = changes.map({$0.index!})
                                 let oldElements = changes.map({$0.oldElement!})
@@ -394,7 +444,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == [TestSection(["test0", "test1", "test2"])]
                             done()
                         }
@@ -406,7 +456,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.changes.startWithNext { change in
+                        property.changes.take(1).startWithNext { change in
                             if case .Insert(let indexPath, let element) = change {
                                 expect(indexPath) == [0, 0]
                                 expect(element as? String) == "test0"
@@ -425,7 +475,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == [TestSection(["test8", "test2"])]
                             done()
                         }
@@ -437,7 +487,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.changes.startWithNext { change in
+                        property.changes.take(1).startWithNext { change in
                             if case .Update(let indexPath, let oldElement, let newElement) = change {
                                 expect(indexPath) == [0, 0]
                                 expect(oldElement as? String) == "test1"
@@ -459,7 +509,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2", "test3", "test4"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.producer.startWithNext { newValue in
+                        property.producer.take(1).startWithNext { newValue in
                             expect(newValue) == [TestSection(["test1", "test3", "test2", "test4"])]
                             done()
                         }
@@ -471,7 +521,7 @@ class MutableCollectionPropertyTests: QuickSpec {
                     let initialValue = [TestSection(["test1", "test2", "test3", "test4"])]
                     let property = MutableCollectionProperty(initialValue)
                     waitUntil(action: { done in
-                        property.changes.startWithNext { change in
+                        property.changes.take(1).startWithNext { change in
                             if case .Composite(let changes) = change {
                                 let indexPaths = changes.map({$0.indexPath!})
                                 let elements = changes.map({$0.oldElement as? String ?? $0.newElement as! String})

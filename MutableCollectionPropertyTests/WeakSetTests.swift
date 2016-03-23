@@ -49,7 +49,7 @@ class WeakSetTests: QuickSpec {
                 var i = 0
                 let weakSet = WeakSet(a, b)
                 for _ in weakSet {
-                    i++
+                    i += 1
                 }
                 expect(Array(weakSet).count) == 2
             }
@@ -69,10 +69,10 @@ class WeakSetTests: QuickSpec {
                 expect(Array(weakSet).count) == 2
                 
                 a = nil
-                expect(weakSet.strings) == [b]
+                expect(Array(weakSet).count) == 1
                 
                 b = nil
-                expect(weakSet.strings) == []
+                expect(Array(weakSet).count) == 0
             }
             
         }

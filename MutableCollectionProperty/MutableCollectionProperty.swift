@@ -266,7 +266,16 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
     // Getting element
     
     public subscript(index: Int) -> T {
-        return self.value[index]
+        get {
+            return self.value[index]
+        }
+        set {
+            if self._items.indices.contains(index) {
+                self.replace(elementAtIndex: index, withElement: newValue)
+            } else {
+                self.insert(newValue, atIndex: index)
+            }
+        }
     }
     
     public func objectAtIndexPath(indexPath: [Int]) -> Any {

@@ -70,7 +70,7 @@ extension WeakSet : SequenceType {
         var contentsGenerator = self.contents.values.generate()
         var entryGenerator = contentsGenerator.next()?.generate()
         
-        return anyGenerator {
+        return AnyGenerator {
             if let element = entryGenerator?.next()?.element {
                 return element
             } else {
