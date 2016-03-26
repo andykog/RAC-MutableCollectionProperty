@@ -32,7 +32,7 @@ property.producer.startWithNext { newCollection in
   // Do whatever you want with the new collection
   // e.g. tableView.reloadData()
 }
-property.changesProducer.startWithNext { change in
+property.flatChanges.startWithNext { change in
   switch change {
     case Remove(Int, T)
     case Insert(Int, T)
@@ -40,6 +40,51 @@ property.changesProducer.startWithNext { change in
   }
 }
 ```
+:warning:
+don't rely on `.flatChanges` (`.flatChangesSignal`) when using deep collection, it won't notify on deep data changes,
+although it gives you more type checking with flat collection.
+Use `.changes` (`.changesSignal`) for deep collections.
+
+
+## Deep collections
+
+Collections with values of type `MutableCollectionSection` allows changing elements deeply inside and track those changes.
+
+```swift
+let table: MutableCollectionProperty<MutableCollectionSection<String>> =
+    MutableCollectionProperty([
+        MutableCollectionSection(["test1", "test2"]),
+        MutableCollectionSection(["test3", "test4"])
+    ])
+
+table.changes.startWithNext { change in
+    switch change {
+        case Remove([Int], Any)      // [Int] — index path
+        case Insert([Int], Any)      // [Int] — index path
+        case Composite([CollectionChange])
+    } 
+}
+
+table.removeAtIndexPath([1, 1]) // will remove "test4"
+```
+
+You can sublass `MutableCollectionSection` so it suits your needs:
+```
+class UITableViewSectionData: MutableCollectionSection<NSManagedObject> {
+    let name: String?
+    let indexTitle: String?
+    init(objects: [NSManagedObject], sectionName name: String?, indexTitle: String?) {
+        self.name = name
+        self.indexTitle = indexTitle
+        super.init(objects)
+    }
+}
+```
+
+## Real-world example
+
+Take a look at [RACFRC](https://github.com/andykog/RACFRC) source.
+
 
 ## Developers
 - If you had any problem, contact [pedro@gitdo.io](mailto://pedro@gitdo.io).
