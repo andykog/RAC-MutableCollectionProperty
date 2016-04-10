@@ -47,7 +47,7 @@ public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectio
 
     public let id: Int
     
-    init (_ items: [T]) {
+    public init (_ items: [T]) {
         self._items = items
         self.id = Int(arc4random_uniform(6) + 1)
         self._lock.name = "org.reactivecocoa.ReactiveCocoa.MutableCollectionProperty"
