@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "RACMutableCollectionProperty"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "MutableCollectionProperty for ReactiveCocoa"
   s.homepage         = "https://github.com/gitdoapp/RAC-MutableCollectionProperty"
   s.license          = 'MIT'
@@ -15,5 +15,5 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'MutableCollectionProperty/**/*.swift'
-  s.dependency 'ReactiveCocoa', '4.0.1'
+  s.dependency 'ReactiveCocoa', '4.1.0'
 end
