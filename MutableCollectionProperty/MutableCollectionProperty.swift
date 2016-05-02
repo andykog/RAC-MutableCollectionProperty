@@ -41,7 +41,7 @@ public enum MutableCollectionSectionError: ErrorType, CustomStringConvertible {
     }
 }
 
-public class MutableCollectionProperty<T>: PropertyType, MutableCollectionSectionProtocol {
+public class MutableCollectionProperty<T>: MutablePropertyType, MutableCollectionSectionProtocol {
     
     public typealias Value = [T]
 
