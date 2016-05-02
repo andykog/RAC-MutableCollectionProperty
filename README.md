@@ -48,13 +48,13 @@ Use `.changes` (`.changesSignal`) for deep collections.
 
 ## Deep collections
 
-Collections with values of type `MutableCollectionSection` allows changing elements deeply inside and track those changes.
+Collections with values of type `MutableCollectionProperty` allows changing elements deeply inside and track those changes.
 
 ```swift
-let table: MutableCollectionProperty<MutableCollectionSection<String>> =
+let table: MutableCollectionProperty<MutableCollectionProperty<String>> =
     MutableCollectionProperty([
-        MutableCollectionSection(["test1", "test2"]),
-        MutableCollectionSection(["test3", "test4"])
+        MutableCollectionProperty(["test1", "test2"]),
+        MutableCollectionProperty(["test3", "test4"])
     ])
 
 table.changes.startWithNext { change in
@@ -68,9 +68,9 @@ table.changes.startWithNext { change in
 table.removeAtIndexPath([1, 1]) // will remove "test4"
 ```
 
-You can sublass `MutableCollectionSection` so it suits your needs:
+You can sublass `MutableCollectionProperty` so it suits your needs:
 ```
-class UITableViewSectionData: MutableCollectionSection<NSManagedObject> {
+class UITableViewSectionData: MutableCollectionProperty<NSManagedObject> {
     let name: String?
     let indexTitle: String?
     init(objects: [NSManagedObject], sectionName name: String?, indexTitle: String?) {
