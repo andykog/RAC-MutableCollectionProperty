@@ -43,6 +43,7 @@ public enum MutableCollectionChange {
         }
     }
     
+    // The same change event but with indexPath prepended by given index
     internal func increasedDepth(index: Int) -> MutableCollectionChange {
         switch self {
         case .Remove(let indexPath, let element): return .Remove([index] + indexPath, element)
@@ -52,6 +53,7 @@ public enum MutableCollectionChange {
         }
     }
     
+    // Current deep change converted to flat change
     internal func flat<Z>() -> FlatMutableCollectionChange<Z>? {
         switch self {
         case .Remove(let indexPath, let el):
